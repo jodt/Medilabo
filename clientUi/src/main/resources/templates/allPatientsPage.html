@@ -1,0 +1,42 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Mcommerce</title>
+    <link rel="stylesheet" href="/webjars/bootstrap/5.3.3/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container">
+    <h1>Application Medilabo</h1>
+    <div>
+        <div class="card">
+            <div class="card-header bg-primary-subtle">Liste Patients</div>
+            <div class="card-body">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">GivenName</th>
+                        <th scope="col">Date Of Birth</th>
+                        <th scope="col">Gender</th>
+                        <th scope="col">Address</th>
+                        <th scope="col">Phone Number</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="patient : ${patients}">
+                        <td th:text="${patient.lastName}"></td>
+                        <td th:text="${patient.firstName}"></td>
+                        <td th:text="${patient.dateOfBirth}"></td>
+                        <td th:text="${patient.gender}"></td>
+                        <td th:text="${patient.address.getNumber()} + ' ' +  ${patient.address.getStreet()}"></td>
+                        <td th:text="${patient.phoneNumber}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
