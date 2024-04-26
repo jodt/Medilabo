@@ -1,6 +1,7 @@
 package com.medilabosolutions.patient.service;
 
 import com.medilabosolutions.patient.dto.PatientDto;
+import com.medilabosolutions.patient.exception.ResouceNotFoundException;
 import com.medilabosolutions.patient.mapper.PatientMapper;
 import com.medilabosolutions.patient.model.Address;
 import com.medilabosolutions.patient.model.Patient;
@@ -53,8 +54,21 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public Optional<Patient> getPatient(PatientDto patientDto) {
-        return this.patientRepository.findByLastNameAndFirstNameAndDateOfBirth(patientDto.getLastName(),patientDto.getFirstName(),patientDto.getDateOfBirth());
+    public PatientDto getPatient(PatientDto patientDto) throws ResouceNotFoundException {
+        Optional<Patient> registeredPatient =  this.patientRepository.findByLastNameAndFirstNameAndDateOfBirth(patientDto.getLastName(),patientDto.getFirstName(),patientDto.getDateOfBirth());
+        return registeredPatient.map(patientMapper::asPatientDto).orElseThrow(ResouceNotFoundException::new);
+    }
+
+    @Override
+    public Patient updatePatient(PatientDto patientDto) throws ResouceNotFoundException {
+        Patient patientUpdated = patientMapper.asPatient(patientDto);
+        Optional<Patient> patientToUpdate = this.patientRepository.findByLastNameAndFirstNameAndDateOfBirth(patientUpdated.getLastName(),patientUpdated.getFirstName(),patientUpdated.getDateOfBirth());
+        if (patientToUpdate.isPresent()){
+            patientUpdated.setId(patientToUpdate.get().getId());
+            return patientRepository.save(patientUpdated);
+        } else {
+            throw  new ResouceNotFoundException();
+        }
     }
 
     private Address saveNewAddress(Patient patient) {
