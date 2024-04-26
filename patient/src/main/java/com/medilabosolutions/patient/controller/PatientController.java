@@ -1,6 +1,7 @@
 package com.medilabosolutions.patient.controller;
 
 import com.medilabosolutions.patient.dto.PatientDto;
+import com.medilabosolutions.patient.exception.ResouceNotFoundException;
 import com.medilabosolutions.patient.model.Patient;
 import com.medilabosolutions.patient.service.PatientService;
 import org.springframework.http.HttpStatus;
@@ -27,14 +28,29 @@ public class PatientController {
     }
 
     @PostMapping ("/add")
-    public ResponseEntity<Patient> getAllPatients (@RequestBody PatientDto patient) {
+    public ResponseEntity<Patient> addPatient (@RequestBody PatientDto patient) {
         Patient patientAdded = this.patientService.addPatient(patient);
         return new ResponseEntity<>(patientAdded,HttpStatus.CREATED);
     }
 
     @GetMapping("/find")
-    public Optional<Patient> findPatient(@RequestBody PatientDto patientDto) {
-        return this.patientService.getPatient(patientDto);
+    public ResponseEntity<PatientDto> findPatient(@RequestBody PatientDto patientDto) {
+        try {
+            PatientDto patientToReturn =  this.patientService.getPatient(patientDto);
+            return new ResponseEntity<>(patientToReturn, HttpStatus.OK);
+        } catch (ResouceNotFoundException exception) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<Object> updatePatient(@RequestBody PatientDto patientDto) {
+        try {
+            return new ResponseEntity<>(this.patientService.updatePatient(patientDto), HttpStatus.OK);
+        } catch (ResouceNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
 }
