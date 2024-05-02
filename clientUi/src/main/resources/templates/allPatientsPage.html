@@ -10,11 +10,12 @@
     <h1>Application Medilabo</h1>
     <div>
         <div class="card">
-            <div class="card-header bg-primary-subtle">Liste Patients</div>
+            <div class="card-header bg-primary-subtle">Patient List</div>
             <div class="card-body">
                 <table class="table">
                     <thead>
                     <tr>
+                        <th scope="col">Patient Number</th>
                         <th scope="col">Name</th>
                         <th scope="col">GivenName</th>
                         <th scope="col">Date Of Birth</th>
@@ -25,6 +26,7 @@
                     </thead>
                     <tbody>
                     <tr th:each="patient : ${patients}">
+                        <td th:text="${patient.id}"></td>
                         <td th:text="${patient.lastName}"></td>
                         <td th:text="${patient.firstName}"></td>
                         <td th:text="${patient.dateOfBirth}"></td>

@@ -7,7 +7,10 @@ import java.time.LocalDate;
 
 @Data
 public class PatientBean {
+    @NotNull
+    private Integer id;
 
+    @NotNull
     private String lastName;
 
     @NotNull
