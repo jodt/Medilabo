@@ -13,6 +13,9 @@ import java.time.LocalDate;
 public class PatientDto {
 
     @NotNull
+    private Integer id;
+
+    @NotNull
     private String lastName;
 
     @NotNull
