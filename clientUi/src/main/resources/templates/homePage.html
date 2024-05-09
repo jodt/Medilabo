@@ -1,0 +1,82 @@
+<!DOCTYPE HTML>
+<html
+        lang="en"
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{layout}"
+>
+    <head>
+        <meta charset="UTF-8">
+        <title>Medilabo</title>
+        <link rel="stylesheet" href="/webjars/bootstrap/5.3.3/css/bootstrap.min.css">
+        <link rel="stylesheet" href="webjars/bootstrap-icons/1.11.3/font/bootstrap-icons.css">
+    </head>
+    <body layout:fragment="content">
+        <div class="container p-3">
+            <div>
+                <div class="card">
+                    <div class="card-header bg-primary-subtle">Patient List</div>
+                    <div class="card-body">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Patient Number</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">GivenName</th>
+                                    <th scope="col">Date Of Birth</th>
+                                    <th scope="col">Gender</th>
+                                    <th scope="col">Address</th>
+                                    <th scope="col">Phone Number</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="patient : ${patients}">
+                                    <td th:text="${patient.id}"></td>
+                                    <td th:text="${patient.lastName}"></td>
+                                    <td th:text="${patient.firstName}"></td>
+                                    <td th:text="${patient.dateOfBirth}"></td>
+                                    <td th:text="${patient.gender}"></td>
+                                    <td th:text="${patient.address.getNumber()} + ' ' +  ${patient.address.getStreet()}"></td>
+                                    <td th:text="${patient.phoneNumber}"></td>
+                                    <td>
+                                        <a class="btn btn-primary">
+                                            <i class="bi bi-pencil-fill"></i>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a class="btn btn-success">
+                                            <i class="bi bi-eye-fill"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="pt-2">
+                    <div class="card w-50">
+                        <div class="card-header bg-primary-subtle">Search Patient</div>
+                        <div class="card-body">
+                            <form th:action="@{/}">
+                                <div class="mb-2">
+                                    <label for="lastName" class="form-label">LastName</label>
+                                    <input type="text" class="form-control" id="lastName" th:name="lastName">
+                                </div>
+                                <div class="mb-2">
+                                    <label for="firstName" class="form-label">FirstName</label>
+                                    <input type="text" class="form-control" id="firstName" th:name="firstName">
+                                </div>
+                                <div class="mb-2">
+                                    <label for="dateOfBirth" class="form-label">DateOfBirth</label>
+                                    <input type="text" class="form-control" id="dateOfBirth" th:name="dateOfBirth">
+                                </div>
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </body>
+</html>
