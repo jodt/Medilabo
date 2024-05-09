@@ -5,7 +5,9 @@ import com.medilabosolutions.clientui.proxies.PatientProxy;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Controller
@@ -18,11 +20,21 @@ public class ClientController {
     }
 
     @GetMapping("/")
-    public String allPatientPage(Model model) {
-        List<PatientBean> patients = this.patientProxy.getAllPatients();
+    public String allPatientByCriteria(Model model,
+                                       @RequestParam(defaultValue = "") String firstName,
+                                       @RequestParam(defaultValue = "") String lastName,
+                                       @RequestParam(defaultValue = "") LocalDate dateOfBirth) {
+
+        List<PatientBean> patients = this.patientProxy.getBySerachCriteria(lastName,firstName,dateOfBirth);
         model.addAttribute("patients", patients);
-        return ("/allPatientsPage");
+        return ("homePage");
     }
+
+    @GetMapping("/addPatient")
+    public String showAddPatientForm() {
+        return ("addPatientPage");
+    }
+
 
 
 }
