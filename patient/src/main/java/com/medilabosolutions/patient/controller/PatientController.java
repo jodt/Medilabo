@@ -6,10 +6,14 @@ import com.medilabosolutions.patient.model.Patient;
 import com.medilabosolutions.patient.service.PatientService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.annotation.RequestScope;
 
+import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @RestController
@@ -25,6 +29,12 @@ public class PatientController {
     @GetMapping("/all")
     public List<PatientDto> getAllPatients () {
         return this.patientService.findAllPatients();
+    }
+
+    @GetMapping("/findBySearchCriteria")
+    public List<PatientDto> getBySerachCriteria(@RequestParam(required = false) String lastName,@RequestParam(required = false) String firstName, @RequestParam(required = false) LocalDate dateOfBirth){
+        boolean matchAll = !lastName.isEmpty() && !firstName.isEmpty() && !Objects.isNull(dateOfBirth);
+        return this.patientService.findPatients(lastName, firstName, dateOfBirth, matchAll);
     }
 
     @PostMapping ("/add")

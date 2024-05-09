@@ -7,8 +7,11 @@ import com.medilabosolutions.patient.model.Address;
 import com.medilabosolutions.patient.model.Patient;
 import com.medilabosolutions.patient.repository.PatientRepository;
 import fr.xebia.extras.selma.Selma;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -22,6 +25,20 @@ public class PatientServiceImpl implements PatientService {
 
     private final PatientMapper patientMapper = Selma.builder(PatientMapper.class).build();
 
+    private static final ExampleMatcher SEARCH_CONDITIONS_MATH_ANY = ExampleMatcher
+            .matchingAny()
+            .withMatcher("dateOfBirth", ExampleMatcher.GenericPropertyMatchers.exact())
+            .withMatcher("lastName", ExampleMatcher.GenericPropertyMatchers.contains().ignoreCase())
+            .withMatcher("firstName", ExampleMatcher.GenericPropertyMatchers.contains().ignoreCase())
+            .withIgnorePaths("id", "gender", "address", "phoneNumber");
+
+    private static final ExampleMatcher SEARCH_CONDITIONS_MATH_ALL = ExampleMatcher
+            .matching()
+            .withMatcher("dateOfBirth", ExampleMatcher.GenericPropertyMatchers.exact())
+            .withMatcher("lastName", ExampleMatcher.GenericPropertyMatchers.contains().ignoreCase())
+            .withMatcher("firstName", ExampleMatcher.GenericPropertyMatchers.contains().ignoreCase())
+            .withIgnorePaths("id", "gender", "address", "phoneNumber");
+
     public PatientServiceImpl(PatientRepository patientRepository, AddressService addressService) {
         this.patientRepository = patientRepository;
         this.addressService = addressService;
@@ -30,6 +47,21 @@ public class PatientServiceImpl implements PatientService {
     @Override
     public List<PatientDto> findAllPatients() {
         return this.patientRepository.findAll().stream().map(patientMapper::asPatientDto).collect(Collectors.toList());
+    }
+
+   @Override
+    public List<PatientDto> findPatients(String lastName, String firstName, LocalDate dateOfBirth, boolean matchAll) {
+
+        Patient patient = Patient.builder()
+                .lastName(lastName.isEmpty() ? null : lastName)
+                .firstName(firstName.isEmpty()? null : firstName)
+                .dateOfBirth(dateOfBirth)
+                .build();
+
+        Example<Patient> patientExample = Example.of(patient, matchAll ? SEARCH_CONDITIONS_MATH_ALL : SEARCH_CONDITIONS_MATH_ANY);
+        List<Patient> patients =  this.patientRepository.findAll(patientExample);
+
+        return patients.stream().map(patientMapper::asPatientDto).collect(Collectors.toList());
     }
 
     @Override
@@ -79,6 +111,5 @@ public class PatientServiceImpl implements PatientService {
         this.addressService.saveAddress(newAddress);
         return newAddress;
     }
-
 
 }
