@@ -2,9 +2,13 @@ package com.medilabosolutions.clientui.controller;
 
 import com.medilabosolutions.clientui.beans.PatientBean;
 import com.medilabosolutions.clientui.proxies.PatientProxy;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
@@ -31,10 +35,18 @@ public class ClientController {
     }
 
     @GetMapping("/addPatient")
-    public String showAddPatientForm() {
+    public String showAddPatientForm(Model model) {
+        model.addAttribute("newPatient", new PatientBean());
         return ("addPatientPage");
     }
 
-
+    @PostMapping("/addPatient")
+    public String addNewPatient(@Valid @ModelAttribute("newPatient") PatientBean newPatient, BindingResult bindingResult) {
+        if(bindingResult.hasErrors()){
+            return ("addPatientPage");
+        }
+        this.patientProxy.addPatient(newPatient);
+        return ("redirect:addPatient?success");
+    }
 
 }
