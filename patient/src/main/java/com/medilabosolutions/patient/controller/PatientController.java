@@ -43,17 +43,6 @@ public class PatientController {
         return new ResponseEntity<>(patientAdded,HttpStatus.CREATED);
     }
 
-    @GetMapping("/find")
-    public ResponseEntity<PatientDto> findPatient(@RequestBody PatientDto patientDto) {
-        try {
-            PatientDto patientToReturn =  this.patientService.getPatient(patientDto);
-            return new ResponseEntity<>(patientToReturn, HttpStatus.OK);
-        } catch (ResouceNotFoundException exception) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-    }
-
     @PutMapping("/update")
     public ResponseEntity<Object> updatePatient(@RequestBody PatientDto patientDto) {
         try {
