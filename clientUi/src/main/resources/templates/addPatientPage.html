@@ -16,11 +16,14 @@
             <div class="alert alert-success" th:if="${param.success}">
                 Patient added successfully
             </div>
+            <div class="alert alert-danger" th:if="${param.error}">
+                Patient already registered
+            </div>
             <div>
                 <div class="card">
                     <div class="card-header bg-primary-subtle">Add Patient</div>
                     <div class="card-body">
-                        <form action="#" th:action="@{/addPatient}" method="post" th:object="${newPatient}">
+                        <form action="#" th:action="@{/patient/add}" method="post" th:object="${newPatient}">
                             <div class="mb-2">
                                 <label for="lastName" class="form-label">LastName</label>
                                 <input type="text" class="form-control" id="lastName" th:field="*{lastName}">
@@ -41,7 +44,7 @@
                             ></div>
                             <div class="mb-2">
                                 <label for="dateOfBirth" class="form-label">DateOfBirth</label>
-                                <input type="text" class="form-control" id="dateOfBirth" th:field="*{dateOfBirth}">
+                                <input type="text" class="form-control" id="dateOfBirth" th:field="*{dateOfBirth}" pattern="(\d{4}-\d{2}-\d{2})" placeholder="YYYY-MM-DDqq">
                             </div>
                             <div
                                     class="text-danger"
@@ -62,7 +65,7 @@
                             ></div>
                             <div class="mb-2">
                                 <label for="streetNumber" class="form-label">Street Number</label>
-                                <input type="text" class="form-control" id="streetNumber" th:field="*{address.number}">
+                                <input type="number" class="form-control" id="streetNumber" th:field="*{address.number}">
                             </div>
                             <div class="mb-2">
                                 <label for="streetName" class="form-label">Street Name</label>
