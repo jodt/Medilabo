@@ -4,8 +4,7 @@ import lombok.Data;
 
 @Data
 public class AddressBean {
-    private int number;
+    private Integer number;
 
     private String street;
-
 }
