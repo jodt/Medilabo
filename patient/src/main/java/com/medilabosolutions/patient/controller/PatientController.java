@@ -1,6 +1,7 @@
 package com.medilabosolutions.patient.controller;
 
 import com.medilabosolutions.patient.dto.PatientDto;
+import com.medilabosolutions.patient.exception.PatientAlreadyRegisteredException;
 import com.medilabosolutions.patient.exception.ResouceNotFoundException;
 import com.medilabosolutions.patient.model.Patient;
 import com.medilabosolutions.patient.service.PatientService;
@@ -37,8 +38,13 @@ public class PatientController {
         return this.patientService.findPatients(lastName, firstName, dateOfBirth, matchAll);
     }
 
+    @GetMapping("/findPatientById/{id}")
+    public PatientDto getPatientById(@PathVariable Integer id) throws ResouceNotFoundException {
+        return this.patientService.getPatientById(id);
+    }
+
     @PostMapping ("/add")
-    public ResponseEntity<Patient> addPatient (@RequestBody PatientDto patient) {
+    public ResponseEntity<Patient> addPatient (@RequestBody PatientDto patient) throws PatientAlreadyRegisteredException {
         Patient patientAdded = this.patientService.addPatient(patient);
         return new ResponseEntity<>(patientAdded,HttpStatus.CREATED);
     }

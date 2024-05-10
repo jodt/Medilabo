@@ -3,10 +3,7 @@ package com.medilabosolutions.clientui.proxies;
 import com.medilabosolutions.clientui.beans.PatientBean;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -22,4 +19,7 @@ public interface PatientProxy {
 
     @PostMapping("v1/api/patients/add")
     public ResponseEntity<PatientBean> addPatient (@RequestBody PatientBean patientBean);
+
+    @GetMapping("v1/api/patients/findPatientById/{id}")
+    public PatientBean getPatientById(@PathVariable Integer id);
 }

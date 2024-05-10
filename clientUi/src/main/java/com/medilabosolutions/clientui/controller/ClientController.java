@@ -2,14 +2,12 @@ package com.medilabosolutions.clientui.controller;
 
 import com.medilabosolutions.clientui.beans.PatientBean;
 import com.medilabosolutions.clientui.proxies.PatientProxy;
+import feign.FeignException;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -34,19 +32,31 @@ public class ClientController {
         return ("homePage");
     }
 
-    @GetMapping("/addPatient")
+    @GetMapping("/patient/add")
     public String showAddPatientForm(Model model) {
         model.addAttribute("newPatient", new PatientBean());
         return ("addPatientPage");
     }
 
-    @PostMapping("/addPatient")
+    @PostMapping("/patient/add")
     public String addNewPatient(@Valid @ModelAttribute("newPatient") PatientBean newPatient, BindingResult bindingResult) {
         if(bindingResult.hasErrors()){
             return ("addPatientPage");
         }
-        this.patientProxy.addPatient(newPatient);
-        return ("redirect:addPatient?success");
+        try {
+            this.patientProxy.addPatient(newPatient);
+        } catch (FeignException e){
+            return ("redirect:add?error");
+        }
+        return ("redirect:add?success");
     }
+
+    @GetMapping("/patient/infos/{id}")
+    public String getPatientInfos(Model model, @PathVariable Integer id){
+        PatientBean patient = this.patientProxy.getPatientById(id);
+        model.addAttribute("patient",patient);
+        return ("patientInfosPage");
+    }
+
 
 }

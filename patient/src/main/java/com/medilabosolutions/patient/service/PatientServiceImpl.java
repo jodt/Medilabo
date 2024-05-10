@@ -1,6 +1,7 @@
 package com.medilabosolutions.patient.service;
 
 import com.medilabosolutions.patient.dto.PatientDto;
+import com.medilabosolutions.patient.exception.PatientAlreadyRegisteredException;
 import com.medilabosolutions.patient.exception.ResouceNotFoundException;
 import com.medilabosolutions.patient.mapper.PatientMapper;
 import com.medilabosolutions.patient.model.Address;
@@ -65,7 +66,9 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public Patient addPatient(PatientDto patientDto) {
+    public Patient addPatient(PatientDto patientDto) throws PatientAlreadyRegisteredException {
+
+        this.throwExceptionIfPatientAlreadyRegistered(patientDto);
 
         Patient patientToSave = patientMapper.asPatient(patientDto);
         Optional<Address> addressAlreadyRegistered = Optional.empty();
@@ -86,9 +89,8 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public PatientDto getPatient(PatientDto patientDto) throws ResouceNotFoundException {
-        Optional<Patient> registeredPatient =  this.patientRepository.findByLastNameAndFirstNameAndDateOfBirth(patientDto.getLastName(),patientDto.getFirstName(),patientDto.getDateOfBirth());
-        return registeredPatient.map(patientMapper::asPatientDto).orElseThrow(ResouceNotFoundException::new);
+    public Optional<Patient> getPatientByLastNameAndFirstNameAndDateOfBirth(PatientDto patientDto) {
+        return this.patientRepository.findByLastNameAndFirstNameAndDateOfBirth(patientDto.getLastName(),patientDto.getFirstName(),patientDto.getDateOfBirth());
     }
 
     @Override
@@ -100,6 +102,18 @@ public class PatientServiceImpl implements PatientService {
             return patientRepository.save(patientUpdated);
         } else {
             throw  new ResouceNotFoundException();
+        }
+    }
+
+    @Override
+    public PatientDto getPatientById(Integer id) throws ResouceNotFoundException {
+        return this.patientRepository.findById(id).map(patientMapper::asPatientDto).orElseThrow(ResouceNotFoundException::new);
+    }
+
+    private void throwExceptionIfPatientAlreadyRegistered(PatientDto patientDto) throws PatientAlreadyRegisteredException {
+        Optional<Patient> patient = this.getPatientByLastNameAndFirstNameAndDateOfBirth(patientDto);
+        if(patient.isPresent()){
+            throw new PatientAlreadyRegisteredException();
         }
     }
 
