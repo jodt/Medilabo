@@ -53,10 +53,36 @@ public class ClientController {
 
     @GetMapping("/patient/infos/{id}")
     public String getPatientInfos(Model model, @PathVariable Integer id){
-        PatientBean patient = this.patientProxy.getPatientById(id);
-        model.addAttribute("patient",patient);
-        return ("patientInfosPage");
+        try {
+            PatientBean patient = this.patientProxy.getPatientById(id);
+            model.addAttribute("patient", patient);
+            return ("patientInfosPage");
+        } catch (FeignException e) {
+            return "redirect:/?error";
+        }
     }
 
+    @GetMapping("/patient/update/{id}")
+    public String showUpdatePatientForm(Model model, @PathVariable Integer id) {
+        try {
+            PatientBean patient = this.patientProxy.getPatientById(id);
+            model.addAttribute("patient", patient);
+            return ("updatePatientPage");
+        } catch (FeignException e) {
+            return "redirect:/?error";
+        }
+    }
 
+    @PostMapping("/patient/update")
+    public String updatePatient(@Valid @ModelAttribute("patient") PatientBean patientUpdated, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return ("updatePatientPage");
+        }
+        try {
+            this.patientProxy.updatePatient(patientUpdated);
+        } catch (FeignException e) {
+            return ("redirect:add?error");
+        }
+        return ("redirect:add?success");
+    }
 }
