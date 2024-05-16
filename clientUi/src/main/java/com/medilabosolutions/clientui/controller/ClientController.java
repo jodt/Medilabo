@@ -27,7 +27,7 @@ public class ClientController {
                                        @RequestParam(defaultValue = "") String lastName,
                                        @RequestParam(defaultValue = "") LocalDate dateOfBirth) {
 
-        List<PatientBean> patients = this.patientProxy.getBySerachCriteria(lastName,firstName,dateOfBirth);
+        List<PatientBean> patients = this.patientProxy.getBySearchCriteria(lastName,firstName,dateOfBirth);
         model.addAttribute("patients", patients);
         return ("homePage");
     }
