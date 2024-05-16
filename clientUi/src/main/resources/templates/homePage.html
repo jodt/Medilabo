@@ -29,7 +29,7 @@
                                 </div>
                                 <div>
                                     <label for="dateOfBirth" class="form-label">Date Of Birth</label>
-                                    <input type="text" class="form-control" id="dateOfBirth" th:name="dateOfBirth">
+                                    <input type="date" class="form-control" id="dateOfBirth" th:name="dateOfBirth">
                                 </div>
                                 <button type="submit" class="btn btn-primary">Submit</button>
                             </form>
@@ -56,7 +56,7 @@
                                     <td th:text="${patient.id}"></td>
                                     <td th:text="${patient.lastName}"></td>
                                     <td th:text="${patient.firstName}"></td>
-                                    <td th:text="${patient.dateOfBirth}"></td>
+                                    <td th:text="${#temporals.format(patient.dateOfBirth, 'dd-MM-yyyy')}"></td>
                                     <td th:text="${patient.gender}"></td>
                                     <td th:text="(${patient.address.getNumber()} != null ? ${patient.address.getNumber()} : '')  + ' ' +  ${patient.address.getStreet()}"></td>
                                     <td th:text="${patient.phoneNumber}"></td>
