@@ -64,7 +64,7 @@
                                     <td th:text="(${patient.address.getNumber()} != null ? ${patient.address.getNumber()} : '')  + ' ' +  ${patient.address.getStreet()}"></td>
                                     <td th:text="${patient.phoneNumber}"></td>
                                     <td>
-                                        <a class="btn btn-primary">
+                                        <a class="btn btn-primary" th:href="@{/patient/update/{id}(id=${patient.id})}">
                                             <i class="bi bi-pencil-fill"></i>
                                         </a>
                                     </td>
