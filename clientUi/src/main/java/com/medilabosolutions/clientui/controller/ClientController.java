@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -16,6 +17,8 @@ import java.util.List;
 public class ClientController {
 
     private final PatientProxy patientProxy;
+    private static final String ERROR_MESSAGE = "We encountered a problem";
+    private static final String SUCCESS_MESSAGE = "Action completed successfully";
 
     public ClientController(PatientProxy patientProxy) {
         this.patientProxy = patientProxy;
@@ -52,37 +55,41 @@ public class ClientController {
     }
 
     @GetMapping("/patient/infos/{id}")
-    public String getPatientInfos(Model model, @PathVariable Integer id){
+    public String getPatientInfos(Model model, @PathVariable Integer id, RedirectAttributes redirectAttributes){
         try {
             PatientBean patient = this.patientProxy.getPatientById(id);
             model.addAttribute("patient", patient);
             return ("patientInfosPage");
         } catch (FeignException e) {
-            return "redirect:/?error";
+            redirectAttributes.addFlashAttribute("errorMessage", ERROR_MESSAGE);
+            return "redirect:/";
         }
     }
 
     @GetMapping("/patient/update/{id}")
-    public String showUpdatePatientForm(Model model, @PathVariable Integer id) {
+    public String showUpdatePatientForm(Model model, @PathVariable Integer id, RedirectAttributes redirectAttributes) {
         try {
             PatientBean patient = this.patientProxy.getPatientById(id);
             model.addAttribute("patient", patient);
             return ("updatePatientPage");
         } catch (FeignException e) {
-            return "redirect:/?error";
+            redirectAttributes.addFlashAttribute("errorMessage", ERROR_MESSAGE);
+            return "redirect:/";
         }
     }
 
     @PostMapping("/patient/update")
-    public String updatePatient(@Valid @ModelAttribute("patient") PatientBean patientUpdated, BindingResult bindingResult) {
+    public String updatePatient(@Valid @ModelAttribute("patient") PatientBean patientUpdated, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
             return ("updatePatientPage");
         }
         try {
             this.patientProxy.updatePatient(patientUpdated);
+            redirectAttributes.addFlashAttribute("successMessage", SUCCESS_MESSAGE);
+            return ("redirect:/");
         } catch (FeignException e) {
-            return ("redirect:add?error");
+            redirectAttributes.addFlashAttribute("errorMessage", ERROR_MESSAGE);
+            return ("redirect:/");
         }
-        return ("redirect:add?success");
     }
 }
