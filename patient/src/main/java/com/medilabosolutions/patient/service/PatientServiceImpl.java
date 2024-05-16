@@ -96,7 +96,7 @@ public class PatientServiceImpl implements PatientService {
     @Override
     public Patient updatePatient(PatientDto patientDto) throws ResouceNotFoundException {
         Patient patientUpdated = patientMapper.asPatient(patientDto);
-        Optional<Patient> patientToUpdate = this.patientRepository.findByLastNameAndFirstNameAndDateOfBirth(patientUpdated.getLastName(),patientUpdated.getFirstName(),patientUpdated.getDateOfBirth());
+        Optional<Patient> patientToUpdate = this.patientRepository.findById(patientUpdated.getId());
         if (patientToUpdate.isPresent()){
             patientUpdated.setId(patientToUpdate.get().getId());
             return patientRepository.save(patientUpdated);
