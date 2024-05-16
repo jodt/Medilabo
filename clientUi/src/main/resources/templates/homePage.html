@@ -13,6 +13,9 @@
     </head>
     <body layout:fragment="content">
         <div class="container p-3">
+            <div class="alert alert-danger" th:if="${param.error}">
+                We encountered a problem
+            </div>
             <div>
                 <div class="pb-2">
                     <div class="card">
