@@ -1,6 +1,7 @@
 package com.medilabosolutions.patient.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,17 +20,21 @@ public class Patient {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @NotNull
     private String lastName;
 
+    @NotNull
     private String firstName;
 
+    @NotNull
     private LocalDate dateOfBirth;
 
+    @NotNull
     @Enumerated(EnumType.STRING)
     private GenderEnum gender;
 
     @ManyToOne(cascade = {CascadeType.MERGE}, fetch = FetchType.EAGER)
-    @JoinColumn(name = "address-id", referencedColumnName = "id")
+    @JoinColumn(name = "address_id", referencedColumnName = "id")
     private Address address;
 
     private String phoneNumber;
