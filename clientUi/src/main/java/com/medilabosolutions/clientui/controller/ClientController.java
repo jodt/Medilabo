@@ -60,7 +60,7 @@ public class ClientController {
         }
         try {
             this.patientProxy.addPatient(newPatient);
-        } catch (FeignException e) {
+        } catch (FeignException.Conflict e) {
             log.info("Error : {} ", e.getMessage());
             return ("redirect:add?error");
         }
@@ -76,7 +76,7 @@ public class ClientController {
             model.addAttribute("patient", patient);
             log.info("Patient information page displayed");
             return ("patientInfosPage");
-        } catch (FeignException e) {
+        } catch (FeignException.BadRequest e) {
             log.info("Error : {} ", e.getMessage());
             redirectAttributes.addFlashAttribute("errorMessage", ERROR_MESSAGE);
             log.info("Redirect to home page");
