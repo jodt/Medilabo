@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.util.List;
 
-@FeignClient(name = "patient-microservice", url = "localhost:9001")
+@FeignClient(name = "gateway", url = "localhost:8888")
 public interface PatientProxy {
 
     @GetMapping("v1/api/patients/all")

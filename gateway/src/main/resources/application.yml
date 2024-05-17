@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: gateway
+
+  cloud:
+    gateway:
+      routes:
+        - id: patients
+          uri: http://localhost:9001
+          predicates:
+            - Path=/v1/api/patients/**
+
+server:
+  port: 8888
