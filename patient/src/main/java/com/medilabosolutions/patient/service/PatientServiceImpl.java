@@ -8,6 +8,7 @@ import com.medilabosolutions.patient.model.Address;
 import com.medilabosolutions.patient.model.Patient;
 import com.medilabosolutions.patient.repository.PatientRepository;
 import fr.xebia.extras.selma.Selma;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class PatientServiceImpl implements PatientService {
 
@@ -53,6 +55,8 @@ public class PatientServiceImpl implements PatientService {
    @Override
     public List<PatientDto> findPatients(String lastName, String firstName, LocalDate dateOfBirth, boolean matchAll) {
 
+        log.info("Try to collect patients with patient with lastName : {}, firstName : {}, date of birth : {} ", lastName.isEmpty() ? null : lastName , firstName.isEmpty() ? null : firstName, dateOfBirth);
+
         Patient patient = Patient.builder()
                 .lastName(lastName.isEmpty() ? null : lastName)
                 .firstName(firstName.isEmpty()? null : firstName)
@@ -74,14 +78,23 @@ public class PatientServiceImpl implements PatientService {
         Optional<Address> addressAlreadyRegistered = Optional.empty();
 
         if (patientToSave.getAddress() != null) {
+            log.info("check if the address is already registered");
             Integer patientAddressNumber = patientToSave.getAddress().getNumber();
             String patientAddressStreet = patientToSave.getAddress().getStreet();
 
             addressAlreadyRegistered = this.addressService.getAddressByNumberAndStreet(patientAddressNumber, patientAddressStreet);
+            log.info("The address already exists in database : {}", addressAlreadyRegistered.isPresent());
 
-            addressAlreadyRegistered.ifPresentOrElse(patientToSave::setAddress, () -> {
-                Address newAddress = saveNewAddress(patientToSave);
-                patientToSave.setAddress(newAddress);
+            addressAlreadyRegistered.ifPresentOrElse(
+                    address -> {
+                        log.info("Add address to patient");
+                        patientToSave.setAddress(address);
+                        },
+                    () -> {
+                        log.info("Save address to database");
+                        Address newAddress = saveNewAddress(patientToSave);
+                        log.info("Add address to patient");
+                        patientToSave.setAddress(newAddress);
             });
         }
 
@@ -96,25 +109,36 @@ public class PatientServiceImpl implements PatientService {
     @Override
     public Patient updatePatient(PatientDto patientDto) throws ResouceNotFoundException {
         Patient patientUpdated = patientMapper.asPatient(patientDto);
+        log.info("Try to find a patient with id : {}", patientUpdated.getId());
         Optional<Patient> patientToUpdate = this.patientRepository.findById(patientUpdated.getId());
         if (patientToUpdate.isPresent()){
+            log.info("Patient with id : {} was found", patientUpdated.getId());
             patientUpdated.setId(patientToUpdate.get().getId());
+            log.info(("Patent updated successfully"));
             return patientRepository.save(patientUpdated);
         } else {
+            log.error("Patient with id : {} was not found", patientUpdated.getId());
             throw  new ResouceNotFoundException();
         }
     }
 
     @Override
     public PatientDto getPatientById(Integer id) throws ResouceNotFoundException {
-        return this.patientRepository.findById(id).map(patientMapper::asPatientDto).orElseThrow(ResouceNotFoundException::new);
+        log.info("Try to find patient with id : {}", id);
+        return this.patientRepository.findById(id).map(patientMapper::asPatientDto).orElseThrow(() -> {
+            log.error("Patient with id {} not found", id);
+            return new ResouceNotFoundException();
+        });
     }
 
     private void throwExceptionIfPatientAlreadyRegistered(PatientDto patientDto) throws PatientAlreadyRegisteredException {
+        log.info("Check if patient is already registered");
         Optional<Patient> patient = this.getPatientByLastNameAndFirstNameAndDateOfBirth(patientDto);
         if(patient.isPresent()){
+            log.error("Patient is already registered");
             throw new PatientAlreadyRegisteredException();
         }
+        log.info("Patient is not yet registered ");
     }
 
     private Address saveNewAddress(Patient patient) {
