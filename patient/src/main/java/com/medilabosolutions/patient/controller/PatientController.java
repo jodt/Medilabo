@@ -59,13 +59,9 @@ public class PatientController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<Object> updatePatient(@RequestBody PatientDto patientDto) {
+    public ResponseEntity<Object> updatePatient(@RequestBody PatientDto patientDto) throws ResouceNotFoundException {
         log.info("PUT /update called -> start process to update a patient");
-        try {
-            return new ResponseEntity<>(this.patientService.updatePatient(patientDto), HttpStatus.OK);
-        } catch (ResouceNotFoundException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return new ResponseEntity<>(this.patientService.updatePatient(patientDto), HttpStatus.OK);
     }
 
 }
