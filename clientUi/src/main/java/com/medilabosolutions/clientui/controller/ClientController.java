@@ -1,8 +1,9 @@
 package com.medilabosolutions.clientui.controller;
 
 import com.medilabosolutions.clientui.beans.PatientBean;
+import com.medilabosolutions.clientui.exceptions.PatientAlreadyRegisteredException;
+import com.medilabosolutions.clientui.exceptions.ResourceNotFoundException;
 import com.medilabosolutions.clientui.proxies.PatientProxy;
-import feign.FeignException;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -60,8 +61,8 @@ public class ClientController {
         }
         try {
             this.patientProxy.addPatient(newPatient);
-        } catch (FeignException.Conflict e) {
-            log.info("Error : {} ", e.getMessage());
+        } catch (PatientAlreadyRegisteredException e) {
+            log.error("Error : {} ", e.getMessage());
             return ("redirect:add?error");
         }
         log.info("Patient added successfully");
@@ -76,8 +77,8 @@ public class ClientController {
             model.addAttribute("patient", patient);
             log.info("Patient information page displayed");
             return ("patientInfosPage");
-        } catch (FeignException.BadRequest e) {
-            log.info("Error : {} ", e.getMessage());
+        } catch (ResourceNotFoundException e) {
+            log.error("Error : {} ", e.getMessage());
             redirectAttributes.addFlashAttribute("errorMessage", ERROR_MESSAGE);
             log.info("Redirect to home page");
             return "redirect:/";
@@ -92,8 +93,8 @@ public class ClientController {
             model.addAttribute("patient", patient);
             log.info("Patient update form displayed");
             return ("updatePatientPage");
-        } catch (FeignException e) {
-            log.info("Error : {} ", e.getMessage());
+        } catch (ResourceNotFoundException e) {
+            log.error("Error : {} ", e.getMessage());
             redirectAttributes.addFlashAttribute("errorMessage", ERROR_MESSAGE);
             log.info("Redirect to home page");
             return "redirect:/";
@@ -114,8 +115,8 @@ public class ClientController {
             redirectAttributes.addFlashAttribute("successMessage", SUCCESS_MESSAGE);
             log.info("Patient updated successfully");
             return ("redirect:/");
-        } catch (FeignException e) {
-            log.info("Error : {} ", e.getMessage());
+        } catch (ResourceNotFoundException e) {
+            log.error("Error : {} ", e.getMessage());
             redirectAttributes.addFlashAttribute("errorMessage", ERROR_MESSAGE);
             log.info("Redirect to home page");
             return ("redirect:/");

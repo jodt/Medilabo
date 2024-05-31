@@ -142,7 +142,7 @@ class PatientControllerTest {
         when(this.patientService.getPatientById(1)).thenThrow(ResouceNotFoundException.class);
 
         mockMvc.perform(get(URL_PREFIX + "/findPatientById/1"))
-                .andExpect(status().isBadRequest())
+                .andExpect(status().isNotFound())
                 .andDo(print());
 
         verify(this.patientService).getPatientById(1);
@@ -219,7 +219,7 @@ class PatientControllerTest {
         mockMvc.perform(put(URL_PREFIX + "/update")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(patientDto)))
-                .andExpect(status().isBadRequest())
+                .andExpect(status().isNotFound())
                 .andDo(print());
 
         verify(this.patientService).updatePatient(patientDto);
