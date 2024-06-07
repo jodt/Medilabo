@@ -88,7 +88,7 @@ class PatientServiceImplTest {
 
         when(this.patientRepository.findAll(ArgumentMatchers.<Example<Patient>>any())).thenReturn(List.of(patient));
 
-        List<PatientDto> patientList = this.patientService.findPatients(patientDto.getLastName(), "", null, false);
+        List<PatientDto> patientList = this.patientService.findPatients(patientDto.getLastName(), "", null);
 
         assertFalse(patientList.isEmpty());
         assertEquals(1, patientList.size());

@@ -13,7 +13,7 @@ public interface PatientService {
 
     List<PatientDto> findAllPatients();
 
-    List<PatientDto> findPatients(String lastName, String firstName, LocalDate dateOfBirth, boolean matchAll);
+    List<PatientDto> findPatients(String lastName, String firstName, LocalDate dateOfBirth);
 
     Patient addPatient(PatientDto patient) throws PatientAlreadyRegisteredException;
 

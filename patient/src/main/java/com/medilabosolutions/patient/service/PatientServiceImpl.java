@@ -28,14 +28,7 @@ public class PatientServiceImpl implements PatientService {
 
     private final PatientMapper patientMapper = Selma.builder(PatientMapper.class).build();
 
-    private static final ExampleMatcher SEARCH_CONDITIONS_MATH_ANY = ExampleMatcher
-            .matchingAny()
-            .withMatcher("dateOfBirth", ExampleMatcher.GenericPropertyMatchers.exact())
-            .withMatcher("lastName", ExampleMatcher.GenericPropertyMatchers.contains().ignoreCase())
-            .withMatcher("firstName", ExampleMatcher.GenericPropertyMatchers.contains().ignoreCase())
-            .withIgnorePaths("id", "gender", "address", "phoneNumber");
-
-    private static final ExampleMatcher SEARCH_CONDITIONS_MATH_ALL = ExampleMatcher
+    private static final ExampleMatcher SEARCH_CONDITIONS = ExampleMatcher
             .matching()
             .withMatcher("dateOfBirth", ExampleMatcher.GenericPropertyMatchers.exact())
             .withMatcher("lastName", ExampleMatcher.GenericPropertyMatchers.contains().ignoreCase())
@@ -53,7 +46,7 @@ public class PatientServiceImpl implements PatientService {
     }
 
    @Override
-    public List<PatientDto> findPatients(String lastName, String firstName, LocalDate dateOfBirth, boolean matchAll) {
+    public List<PatientDto> findPatients(String lastName, String firstName, LocalDate dateOfBirth) {
 
         log.info("Try to collect patients with patient with lastName : {}, firstName : {}, date of birth : {} ", lastName.isEmpty() ? null : lastName , firstName.isEmpty() ? null : firstName, dateOfBirth);
 
@@ -63,7 +56,7 @@ public class PatientServiceImpl implements PatientService {
                 .dateOfBirth(dateOfBirth)
                 .build();
 
-        Example<Patient> patientExample = Example.of(patient, matchAll ? SEARCH_CONDITIONS_MATH_ALL : SEARCH_CONDITIONS_MATH_ANY);
+        Example<Patient> patientExample = Example.of(patient,SEARCH_CONDITIONS);
         List<Patient> patients =  this.patientRepository.findAll(patientExample);
 
         return patients.stream().map(patientMapper::asPatientDto).collect(Collectors.toList());

@@ -92,7 +92,7 @@ class PatientControllerTest {
     @DisplayName("Should get patient by search criteria")
     void shouldGetPatientBySearchCriteria() throws Exception {
 
-        when(this.patientService.findPatients(eq(""), eq(""), any(), any(Boolean.class))).thenReturn(List.of(patientDto));
+        when(this.patientService.findPatients(eq(""), eq(""), any())).thenReturn(List.of(patientDto));
 
         mockMvc.perform((get(URL_PREFIX + "/findBySearchCriteria")
                         .param("lastName", "")
@@ -110,7 +110,7 @@ class PatientControllerTest {
                 .andExpect((jsonPath("$[0].phoneNumber").value("000-000-000")))
                 .andDo(print());
 
-        verify(this.patientService).findPatients(eq(""), eq(""), any(), any(Boolean.class));
+        verify(this.patientService).findPatients(eq(""), eq(""), any());
 
     }
 
