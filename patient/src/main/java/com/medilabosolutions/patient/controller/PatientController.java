@@ -29,11 +29,6 @@ public class PatientController {
         this.patientService = patientService;
     }
 
-    @GetMapping("/all")
-    public List<PatientDto> getAllPatients() {
-        return this.patientService.findAllPatients();
-    }
-
     @GetMapping("/findBySearchCriteria")
     public List<PatientDto> getBySerachCriteria(@RequestParam(required = false) String lastName, @RequestParam(required = false) String firstName, @RequestParam(required = false) LocalDate dateOfBirth) {
         log.info("GET /findBySearchCriteria called -> start process to search patient with lastName : {}, firstName : {}, date of birth : {}", lastName.isEmpty() ? null : lastName , firstName.isEmpty() ? null : firstName, dateOfBirth);
