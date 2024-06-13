@@ -1,0 +1,47 @@
+version: "3"
+
+services:
+  mysql:
+    image: mysql:8.1
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'patients'
+      MYSQL_ALLOW_EMPTY_PASSWORD: yes
+    ports:
+      - '3306:3306'
+    volumes:
+      - ./patient/src/main/resources/data.sql:/docker-entrypoint-initdb.d/data.sql
+      - mysql_data:/var/lib/mysql
+
+  gateway:
+    build: ./gateway
+    environment:
+      PATIENT_URI: http://patient:9001
+    ports:
+      - '8888:8888'
+
+  patient:
+    depends_on:
+      - mysql
+    build: ./patient
+    ports:
+      - '9001:9001'
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/patients?createDatabaseIfNotExist=true
+
+  client:
+    depends_on:
+      - gateway
+      - patient
+    build: ./clientUi
+    environment:
+      GATEWAY_URI: http://gateway:8888
+    ports:
+      - '8080:8080'
+
+volumes:
+  mysql_data:
+
+
+

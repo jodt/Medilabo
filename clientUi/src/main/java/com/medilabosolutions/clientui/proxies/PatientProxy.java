@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.util.List;
 
-@FeignClient(name = "gateway", url = "localhost:8888")
+@FeignClient(name = "gateway", url = "${gateway.uri}")
 public interface PatientProxy {
 
     @GetMapping("v1/api/patients/all")

@@ -6,7 +6,7 @@ spring:
     gateway:
       routes:
         - id: patients
-          uri: http://localhost:9001
+          uri: ${PATIENT_URI:http://localhost:9001}
           predicates:
             - Path=/v1/api/patients/**
 
