@@ -62,7 +62,8 @@
                                     <td th:text="${patient.firstName}"></td>
                                     <td th:text="${#temporals.format(patient.dateOfBirth, 'dd-MM-yyyy')}"></td>
                                     <td th:text="${patient.gender}"></td>
-                                    <td th:text="(${patient.address.getNumber()} != null ? ${patient.address.getNumber()} : '')  + ' ' +  ${patient.address.getStreet()}"></td>
+                                    <td th:if="${patient.address}" th:text="(${patient.address.getNumber()} != null ? ${patient.address.getNumber()} : '')  + ' ' +  ${patient.address.getStreet()}"></td>
+                                    <td th:unless="${patient.address}"></td>
                                     <td th:text="${patient.phoneNumber}"></td>
                                     <td>
                                         <a class="btn btn-primary" th:href="@{/patient/update/{id}(id=${patient.id})}">
