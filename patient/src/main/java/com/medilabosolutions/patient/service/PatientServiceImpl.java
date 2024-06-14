@@ -70,26 +70,7 @@ public class PatientServiceImpl implements PatientService {
         Patient patientToSave = patientMapper.asPatient(patientDto);
         Optional<Address> addressAlreadyRegistered = Optional.empty();
 
-        if (patientToSave.getAddress() != null) {
-            log.info("check if the address is already registered");
-            Integer patientAddressNumber = patientToSave.getAddress().getNumber();
-            String patientAddressStreet = patientToSave.getAddress().getStreet();
-
-            addressAlreadyRegistered = this.addressService.getAddressByNumberAndStreet(patientAddressNumber, patientAddressStreet);
-            log.info("The address already exists in database : {}", addressAlreadyRegistered.isPresent());
-
-            addressAlreadyRegistered.ifPresentOrElse(
-                    address -> {
-                        log.info("Add address to patient");
-                        patientToSave.setAddress(address);
-                        },
-                    () -> {
-                        log.info("Save address to database");
-                        Address newAddress = saveNewAddress(patientToSave);
-                        log.info("Add address to patient");
-                        patientToSave.setAddress(newAddress);
-            });
-        }
+        this.checkAndSavePatientAddress(patientToSave);
 
         return this.patientRepository.save(patientToSave);
     }
@@ -107,6 +88,7 @@ public class PatientServiceImpl implements PatientService {
         if (patientToUpdate.isPresent()){
             log.info("Patient with id : {} was found", patientUpdated.getId());
             patientUpdated.setId(patientToUpdate.get().getId());
+            this.checkAndSavePatientAddress(patientUpdated);
             log.info(("Patent updated successfully"));
             return patientRepository.save(patientUpdated);
         } else {
@@ -141,6 +123,32 @@ public class PatientServiceImpl implements PatientService {
                 .build();
         this.addressService.saveAddress(newAddress);
         return newAddress;
+    }
+
+    private void checkAndSavePatientAddress(Patient patientToSave) {
+        if (patientToSave.getAddress() != null && patientToSave.getAddress().getNumber() != null && !patientToSave.getAddress().getStreet().isEmpty()) {
+            Optional<Address> addressAlreadyRegistered;
+            log.info("check if the address is already registered");
+            Integer patientAddressNumber = patientToSave.getAddress().getNumber();
+            String patientAddressStreet = patientToSave.getAddress().getStreet();
+
+            addressAlreadyRegistered = this.addressService.getAddressByNumberAndStreet(patientAddressNumber, patientAddressStreet);
+            log.info("The address already exists in database : {}", addressAlreadyRegistered.isPresent());
+
+            addressAlreadyRegistered.ifPresentOrElse(
+                    address -> {
+                        log.info("Add address to patient");
+                        patientToSave.setAddress(address);
+                    },
+                    () -> {
+                        log.info("Save address to database");
+                        Address newAddress = saveNewAddress(patientToSave);
+                        log.info("Add address to patient");
+                        patientToSave.setAddress(newAddress);
+                    });
+        } else {
+            patientToSave.setAddress(null);
+        }
     }
 
 }
