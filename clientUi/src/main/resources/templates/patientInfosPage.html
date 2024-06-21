@@ -32,6 +32,7 @@
             <button type="button" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#noteModal">
                 Add Note
             </button>
+            <div class="mt-2 alert alert-danger" th:if="${errorMessage}" th:text="${errorMessage}"></div>
             <div id="notes" class="mt-2" >
                 <ol class="list-group list-group-numbered">
                     <li th:each="note : ${notes}" class="list-group-item d-flex align-items-start">
