@@ -19,12 +19,6 @@ public class DataInitialization implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-        List<Note> notes = this.noteRepository.findAll();
-
-        if (!notes.isEmpty()) {
-            this.noteRepository.deleteAll();
-        }
-
         Note note1 = Note.builder()
                 .patientId(1)
                 .content("Le patient déclare qu'il 'se sent très bien' Poids égal ou inférieur au poids recommandé")
@@ -70,7 +64,17 @@ public class DataInitialization implements CommandLineRunner {
                 .content("Taille, Poids, Cholestérol, Vertige et Réaction")
                 .build();
 
-        this.noteRepository.insert(List.of(note1,note2,note3,note4,note5,note6,note7,note8,note9));
+        List<Note> notes = List.of(note1,note2,note3,note4,note5,note6,note7,note8,note9);
+
+        this.insertNotesIfNotExist(notes);
+    }
+
+    private void insertNotesIfNotExist(List<Note> notes){
+        for (Note note : notes) {
+            if (!noteRepository.existsByPatientIdAndContent(note.getPatientId(), note.getContent())) {
+                noteRepository.insert(note);
+            }
+        }
     }
 
 }

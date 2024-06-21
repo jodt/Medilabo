@@ -11,4 +11,6 @@ public interface NoteRepository extends MongoRepository<Note, String> {
 
     List<Note> findNoteByPatientId(Integer id);
 
+    boolean existsByPatientIdAndContent(Integer patientId, String content);
+
 }
