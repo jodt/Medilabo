@@ -10,5 +10,10 @@ spring:
           predicates:
             - Path=/v1/api/patients/**
 
+        - id: notes
+          uri: ${NOTE_URI:http://localhost:9002}
+          predicates:
+            - Path=/v1/api/notes/**
+
 server:
   port: 8888
