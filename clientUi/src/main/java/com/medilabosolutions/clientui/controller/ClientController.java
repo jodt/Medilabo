@@ -1,8 +1,10 @@
 package com.medilabosolutions.clientui.controller;
 
+import com.medilabosolutions.clientui.beans.NoteBean;
 import com.medilabosolutions.clientui.beans.PatientBean;
 import com.medilabosolutions.clientui.exceptions.PatientAlreadyRegisteredException;
 import com.medilabosolutions.clientui.exceptions.ResourceNotFoundException;
+import com.medilabosolutions.clientui.proxies.NoteProxy;
 import com.medilabosolutions.clientui.proxies.PatientProxy;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -22,12 +24,15 @@ public class ClientController {
 
     private final PatientProxy patientProxy;
 
+    private  final NoteProxy noteProxy;
+
     private static final String ERROR_MESSAGE = "We encountered a problem";
 
     private static final String SUCCESS_MESSAGE = "Action completed successfully";
 
-    public ClientController(PatientProxy patientProxy) {
+    public ClientController(PatientProxy patientProxy, NoteProxy noteProxy) {
         this.patientProxy = patientProxy;
+        this.noteProxy = noteProxy;
     }
 
     @GetMapping("/")
@@ -75,6 +80,11 @@ public class ClientController {
         try {
             PatientBean patient = this.patientProxy.getPatientById(id);
             model.addAttribute("patient", patient);
+            model.addAttribute("newNote", new NoteBean());
+
+            List<NoteBean> patientNotes = this.noteProxy.findNotesByPatientId(id);
+            model.addAttribute("notes", patientNotes);
+
             log.info("Patient information page displayed");
             return ("patientInfosPage");
         } catch (ResourceNotFoundException e) {
