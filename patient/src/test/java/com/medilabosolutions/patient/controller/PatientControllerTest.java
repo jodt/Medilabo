@@ -38,6 +38,12 @@ class PatientControllerTest {
     @Autowired
     ObjectMapper objectMapper;
 
+    @Autowired
+    MockMvc mockMvc;
+
+    @MockBean
+    PatientService patientService;
+
     private Patient patient;
 
     private PatientDto patientDto;
@@ -81,12 +87,6 @@ class PatientControllerTest {
                 .phoneNumber("000-000-000")
                 .build();
     }
-
-    @Autowired
-    MockMvc mockMvc;
-
-    @MockBean
-    PatientService patientService;
 
     @Test
     @DisplayName("Should get patient by search criteria")
