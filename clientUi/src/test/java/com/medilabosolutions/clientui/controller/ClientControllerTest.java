@@ -2,9 +2,11 @@ package com.medilabosolutions.clientui.controller;
 
 import com.medilabosolutions.clientui.beans.AddressBean;
 import com.medilabosolutions.clientui.beans.GenderEnum;
+import com.medilabosolutions.clientui.beans.NoteBean;
 import com.medilabosolutions.clientui.beans.PatientBean;
 import com.medilabosolutions.clientui.exceptions.PatientAlreadyRegisteredException;
 import com.medilabosolutions.clientui.exceptions.ResourceNotFoundException;
+import com.medilabosolutions.clientui.proxies.NoteProxy;
 import com.medilabosolutions.clientui.proxies.PatientProxy;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -27,6 +29,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = ClientController.class)
@@ -38,9 +41,14 @@ class ClientControllerTest {
     @MockBean
     PatientProxy patientProxy;
 
+    @MockBean
+    NoteProxy noteProxy;
+
     private PatientBean patient;
 
     private AddressBean address;
+
+    private NoteBean notes;
 
     private static final String ERROR_MESSAGE = "We encountered a problem";
 
@@ -62,6 +70,11 @@ class ClientControllerTest {
                 .address(address)
                 .gender(GenderEnum.M)
                 .phoneNumber("000-000-000")
+                .build();
+
+        notes = NoteBean.builder()
+                .patientId(1)
+                .content("patient note")
                 .build();
     }
 
@@ -98,7 +111,8 @@ class ClientControllerTest {
         this.mockMvc.perform(post("/patient/add")
                         .flashAttr("newPatient", patient))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("add?success"));
+                .andExpect(redirectedUrl("add?success"))
+                .andDo(print());
     }
 
     @Test
@@ -132,11 +146,16 @@ class ClientControllerTest {
     void shouldGetPatientInfos() throws Exception {
 
         when(this.patientProxy.getPatientById(patient.getId())).thenReturn(patient);
+        when(this.noteProxy.findNotesByPatientId(patient.getId())).thenReturn(List.of(notes));
 
         this.mockMvc.perform(get("/patient/infos/{id}", patient.getId()))
                 .andExpect(status().isOk())
                 .andExpect(view().name("patientInfosPage"))
-                .andExpect(model().attribute("patient", patient));
+                .andExpect(model().attribute("patient", patient))
+                .andExpect(model().attribute("newNote", new NoteBean()))
+                .andExpect(model().attribute("notes", hasSize(1)))
+                .andExpect(model().attribute("notes", hasItem(notes)))
+                .andDo(print());
 
     }
 
