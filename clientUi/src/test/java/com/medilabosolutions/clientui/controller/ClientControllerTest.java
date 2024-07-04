@@ -8,6 +8,8 @@ import com.medilabosolutions.clientui.exceptions.PatientAlreadyRegisteredExcepti
 import com.medilabosolutions.clientui.exceptions.ResourceNotFoundException;
 import com.medilabosolutions.clientui.proxies.NoteProxy;
 import com.medilabosolutions.clientui.proxies.PatientProxy;
+import com.medilabosolutions.clientui.proxies.RiskReportProxy;
+import feign.FeignException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -44,6 +46,9 @@ class ClientControllerTest {
     @MockBean
     NoteProxy noteProxy;
 
+    @MockBean
+    RiskReportProxy riskReportProxy;
+
     private PatientBean patient;
 
     private AddressBean address;
@@ -51,6 +56,8 @@ class ClientControllerTest {
     private NoteBean notes;
 
     private static final String ERROR_MESSAGE = "We encountered a problem";
+
+    private static final String SERVICE_INACCESSIBLE_MESSAGE = "service is temporarily inaccessible";
 
     private static final String SUCCESS_MESSAGE = "Action completed successfully";
 
@@ -147,6 +154,7 @@ class ClientControllerTest {
 
         when(this.patientProxy.getPatientById(patient.getId())).thenReturn(patient);
         when(this.noteProxy.findNotesByPatientId(patient.getId())).thenReturn(List.of(notes));
+        when(this.riskReportProxy.getRiskPatient(patient.getId())).thenReturn("None");
 
         this.mockMvc.perform(get("/patient/infos/{id}", patient.getId()))
                 .andExpect(status().isOk())
@@ -155,6 +163,7 @@ class ClientControllerTest {
                 .andExpect(model().attribute("newNote", new NoteBean()))
                 .andExpect(model().attribute("notes", hasSize(1)))
                 .andExpect(model().attribute("notes", hasItem(notes)))
+                .andExpect(model().attribute("risk", "None"))
                 .andDo(print());
 
     }
@@ -169,6 +178,43 @@ class ClientControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attribute("errorMessage", ERROR_MESSAGE))
                 .andExpect(redirectedUrl("/"));
+    }
+
+    @Test
+    @DisplayName("should get patient with error message when risk ms is down")
+    void shouldGetPatientInfosWithoutRisk() throws Exception {
+
+        when(this.patientProxy.getPatientById(patient.getId())).thenReturn(patient);
+        when(this.noteProxy.findNotesByPatientId(patient.getId())).thenReturn(List.of(notes));
+        when(this.riskReportProxy.getRiskPatient(patient.getId())).thenThrow(FeignException.class);
+
+        this.mockMvc.perform(get("/patient/infos/{id}", patient.getId()))
+                .andExpect(status().isOk())
+                .andExpect(view().name("patientInfosPage"))
+                .andExpect(model().attribute("patient", patient))
+                .andExpect(model().attribute("newNote", new NoteBean()))
+                .andExpect(model().attribute("notes", hasSize(1)))
+                .andExpect(model().attribute("notes", hasItem(notes)))
+                .andExpect(model().attribute("riskServiceErrorMessage", "Risk " + SERVICE_INACCESSIBLE_MESSAGE))
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("should get patient with error message when note ms is down")
+    void shouldGetPatientInfosWithoutNote() throws Exception {
+
+        when(this.patientProxy.getPatientById(patient.getId())).thenReturn(patient);
+        when(this.noteProxy.findNotesByPatientId(patient.getId())).thenThrow(FeignException.class);
+        when(this.riskReportProxy.getRiskPatient(patient.getId())).thenThrow(FeignException.class);
+
+        this.mockMvc.perform(get("/patient/infos/{id}", patient.getId()))
+                .andExpect(status().isOk())
+                .andExpect(view().name("patientInfosPage"))
+                .andExpect(model().attribute("patient", patient))
+                .andExpect(model().attribute("newNote", new NoteBean()))
+                .andExpect(model().attribute("noteServiceErrorMessage", "Note " + SERVICE_INACCESSIBLE_MESSAGE))
+                .andExpect(model().attribute("riskServiceErrorMessage", "Risk " + SERVICE_INACCESSIBLE_MESSAGE))
+                .andDo(print());
     }
 
     @Test
