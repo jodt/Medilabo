@@ -14,6 +14,9 @@
     <body layout:fragment="content">
         <div class="container p-3">
             <div>
+                <div th:if="${risk}" id="riskLevel" th:class="${risk.equals('None') ? 'alert alert-success' : 'alert alert-danger'}" th:text="'Risk level : ' + ${risk}"></div>
+                <div th:if="${noteServiceErrorMessage}" id="noteServiceError" class="alert alert-danger" th:text="${noteServiceErrorMessage}"></div>
+                <div th:if="${riskServiceErrorMessage}" id="riskServiceError" class="alert alert-danger" th:text="${riskServiceErrorMessage}"></div>
                 <div class="card">
                     <div class="card-header bg-primary-subtle" th:text="'Patient number : ' + ${patient.id}"></div>
                     <div class="card-body">
