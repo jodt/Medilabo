@@ -23,7 +23,7 @@ public class RiskController {
     public String getRiskPatient(@PathVariable Integer id) throws ResourceNotFoundException {
         log.info("Get v1/api/risk/{} called -> start the process to assess patient risk with id {}", id,id );
         String riskLevel = this.riskService.calculPatientRisk(id);
-        log.info("Patient risk assessment completed successfully with risk level {}", riskLevel);
+        log.info("Patient risk assessment completed successfully");
         return riskLevel;
     }
 

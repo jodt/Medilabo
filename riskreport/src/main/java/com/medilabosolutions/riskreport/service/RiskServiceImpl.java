@@ -43,8 +43,9 @@ public class RiskServiceImpl implements RiskService {
         RiskProfilEnum riskProfile = RiskCalculator.defineRiskProfile(patientAge, patientGender);
         log.info("The patient profile is {}", riskProfile.toString());
 
-        return RiskCalculator.defineLevelRiskBasedOnProfile(riskProfile, numbersOfRiskTerms);
-
+        String riskLevel =  RiskCalculator.defineLevelRiskBasedOnProfile(riskProfile, numbersOfRiskTerms);
+        log.info("The patient risk level is {}", riskLevel);
+        return riskLevel;
     }
 
 
