@@ -11,11 +11,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @Slf4j
 @RequestMapping("v1/api/risk")
-public class riskController {
+public class RiskController {
 
     private final RiskService riskService;
 
-    public riskController(RiskService riskService) {
+    public RiskController(RiskService riskService) {
         this.riskService = riskService;
     }
 
