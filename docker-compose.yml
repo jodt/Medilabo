@@ -28,6 +28,7 @@ services:
     environment:
       PATIENT_URI: http://patient:9001
       NOTE_URI: http://note:9002
+      RISK_URI: http://risk:9003
     ports:
       - '8888:8888'
 
@@ -58,6 +59,17 @@ services:
       GATEWAY_URI: http://gateway:8888
     ports:
       - '8080:8080'
+
+  risk:
+    depends_on:
+      - note
+      - patient
+    build: ./riskreport
+    environment:
+      PATIENT_URI: http://patient:9001
+      NOTE_URI: http://note:9002
+    ports:
+      - '9003:9003'
 
 volumes:
   mysql_data:
