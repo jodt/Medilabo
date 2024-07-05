@@ -1,5 +1,6 @@
 package com.medilabosolutions.patient.service;
 
+import com.medilabosolutions.patient.dto.PatientAgeGenderDto;
 import com.medilabosolutions.patient.dto.PatientDto;
 import com.medilabosolutions.patient.exception.PatientAlreadyRegisteredException;
 import com.medilabosolutions.patient.exception.ResouceNotFoundException;
@@ -22,5 +23,7 @@ public interface PatientService {
     Patient updatePatient(PatientDto patientDto) throws ResouceNotFoundException;
 
     PatientDto getPatientById(Integer id) throws ResouceNotFoundException;
+
+    PatientAgeGenderDto getPatientWithAgeAndGender (Integer id) throws ResouceNotFoundException;
 
 }

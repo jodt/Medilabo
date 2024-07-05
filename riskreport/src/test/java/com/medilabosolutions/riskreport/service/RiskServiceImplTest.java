@@ -2,7 +2,7 @@ package com.medilabosolutions.riskreport.service;
 
 import com.medilabosolutions.riskreport.beans.GenderEnum;
 import com.medilabosolutions.riskreport.beans.NoteBean;
-import com.medilabosolutions.riskreport.beans.PatientBean;
+import com.medilabosolutions.riskreport.beans.PatientAgeGenderBean;
 import com.medilabosolutions.riskreport.exceptions.ResourceNotFoundException;
 import com.medilabosolutions.riskreport.proxies.NoteProxy;
 import com.medilabosolutions.riskreport.proxies.PatientProxy;
@@ -42,13 +42,12 @@ class RiskServiceImplTest {
                 .content("Le patient déclare qu'il 'se sent très bien' Poids égal ou inférieur au poids recommandé")
                 .build();
 
-        PatientBean patient = PatientBean.builder()
-                .id(1)
-                .dateOfBirth(LocalDate.of(1999, 8, 22))
+        PatientAgeGenderBean patient = PatientAgeGenderBean.builder()
+                .age(25)
                 .gender(GenderEnum.M)
                 .build();
 
-        when(this.patientProxy.getPatientById(1)).thenReturn(patient);
+        when(this.patientProxy.getPatientAgeGender(1)).thenReturn(patient);
         when(this.noteProxy.findNotesByPatientId(1)).thenReturn(List.of(note));
 
         String result = riskService.calculPatientRisk(1);
@@ -56,7 +55,7 @@ class RiskServiceImplTest {
         assertNotNull(result);
         assertEquals("None", result);
 
-        verify(this.patientProxy).getPatientById(1);
+        verify(this.patientProxy).getPatientAgeGender(1);
         verify(this.noteProxy).findNotesByPatientId(1);
     }
 
@@ -70,13 +69,12 @@ class RiskServiceImplTest {
                 .build();
 
 
-        PatientBean patient = PatientBean.builder()
-                .id(1)
-                .dateOfBirth(LocalDate.of(1999, 8, 22))
+        PatientAgeGenderBean patient = PatientAgeGenderBean.builder()
+                .age(25)
                 .gender(GenderEnum.M)
                 .build();
 
-        when(this.patientProxy.getPatientById(1)).thenReturn(patient);
+        when(this.patientProxy.getPatientAgeGender(1)).thenReturn(patient);
         when(this.noteProxy.findNotesByPatientId(1)).thenReturn(List.of(note));
 
         String result = riskService.calculPatientRisk(1);
@@ -84,7 +82,7 @@ class RiskServiceImplTest {
         assertNotNull(result);
         assertEquals("InDanger", result);
 
-        verify(this.patientProxy).getPatientById(1);
+        verify(this.patientProxy).getPatientAgeGender(1);
         verify(this.noteProxy).findNotesByPatientId(1);
     }
 
@@ -98,13 +96,12 @@ class RiskServiceImplTest {
                 .build();
 
 
-        PatientBean patient = PatientBean.builder()
-                .id(1)
-                .dateOfBirth(LocalDate.of(1999, 8, 22))
+        PatientAgeGenderBean patient = PatientAgeGenderBean.builder()
+                .age(25)
                 .gender(GenderEnum.M)
                 .build();
 
-        when(this.patientProxy.getPatientById(1)).thenReturn(patient);
+        when(this.patientProxy.getPatientAgeGender(1)).thenReturn(patient);
         when(this.noteProxy.findNotesByPatientId(1)).thenReturn(List.of(note));
 
         String result = riskService.calculPatientRisk(1);
@@ -112,7 +109,7 @@ class RiskServiceImplTest {
         assertNotNull(result);
         assertEquals("EarlyOnset", result);
 
-        verify(this.patientProxy).getPatientById(1);
+        verify(this.patientProxy).getPatientAgeGender(1);
         verify(this.noteProxy).findNotesByPatientId(1);
     }
 
@@ -125,13 +122,12 @@ class RiskServiceImplTest {
                 .content("La patiente déclare qu'elle 'se sent très bien' Poids égal ou inférieur au poids recommandé")
                 .build();
 
-        PatientBean patient = PatientBean.builder()
-                .id(1)
-                .dateOfBirth(LocalDate.of(1999, 8, 22))
+        PatientAgeGenderBean patient = PatientAgeGenderBean.builder()
+                .age(25)
                 .gender(GenderEnum.F)
                 .build();
 
-        when(this.patientProxy.getPatientById(1)).thenReturn(patient);
+        when(this.patientProxy.getPatientAgeGender(1)).thenReturn(patient);
         when(this.noteProxy.findNotesByPatientId(1)).thenReturn(List.of(note));
 
         String result = riskService.calculPatientRisk(1);
@@ -139,7 +135,7 @@ class RiskServiceImplTest {
         assertNotNull(result);
         assertEquals("None", result);
 
-        verify(this.patientProxy).getPatientById(1);
+        verify(this.patientProxy).getPatientAgeGender(1);
         verify(this.noteProxy).findNotesByPatientId(1);
     }
 
@@ -153,13 +149,12 @@ class RiskServiceImplTest {
                 .build();
 
 
-        PatientBean patient = PatientBean.builder()
-                .id(1)
-                .dateOfBirth(LocalDate.of(1999, 8, 22))
+        PatientAgeGenderBean patient = PatientAgeGenderBean.builder()
+                .age(25)
                 .gender(GenderEnum.F)
                 .build();
 
-        when(this.patientProxy.getPatientById(1)).thenReturn(patient);
+        when(this.patientProxy.getPatientAgeGender(1)).thenReturn(patient);
         when(this.noteProxy.findNotesByPatientId(1)).thenReturn(List.of(note));
 
         String result = riskService.calculPatientRisk(1);
@@ -167,7 +162,7 @@ class RiskServiceImplTest {
         assertNotNull(result);
         assertEquals("InDanger", result);
 
-        verify(this.patientProxy).getPatientById(1);
+        verify(this.patientProxy).getPatientAgeGender(1);
         verify(this.noteProxy).findNotesByPatientId(1);
     }
 
@@ -181,13 +176,12 @@ class RiskServiceImplTest {
                 .build();
 
 
-        PatientBean patient = PatientBean.builder()
-                .id(1)
-                .dateOfBirth(LocalDate.of(1999, 8, 22))
+        PatientAgeGenderBean patient = PatientAgeGenderBean.builder()
+                .age(25)
                 .gender(GenderEnum.F)
                 .build();
 
-        when(this.patientProxy.getPatientById(1)).thenReturn(patient);
+        when(this.patientProxy.getPatientAgeGender(1)).thenReturn(patient);
         when(this.noteProxy.findNotesByPatientId(1)).thenReturn(List.of(note));
 
         String result = riskService.calculPatientRisk(1);
@@ -195,7 +189,7 @@ class RiskServiceImplTest {
         assertNotNull(result);
         assertEquals("EarlyOnset", result);
 
-        verify(this.patientProxy).getPatientById(1);
+        verify(this.patientProxy).getPatientAgeGender(1);
         verify(this.noteProxy).findNotesByPatientId(1);
     }
 
@@ -208,13 +202,12 @@ class RiskServiceImplTest {
                 .content("Le patient déclare qu'il 'se sent très bien' Poids égal ou inférieur au poids recommandé")
                 .build();
 
-        PatientBean patient = PatientBean.builder()
-                .id(1)
-                .dateOfBirth(LocalDate.of(1950, 8, 22))
+        PatientAgeGenderBean patient = PatientAgeGenderBean.builder()
+                .age(60)
                 .gender(GenderEnum.M)
                 .build();
 
-        when(this.patientProxy.getPatientById(1)).thenReturn(patient);
+        when(this.patientProxy.getPatientAgeGender(1)).thenReturn(patient);
         when(this.noteProxy.findNotesByPatientId(1)).thenReturn(List.of(note));
 
         String result = riskService.calculPatientRisk(1);
@@ -222,7 +215,7 @@ class RiskServiceImplTest {
         assertNotNull(result);
         assertEquals("None", result);
 
-        verify(this.patientProxy).getPatientById(1);
+        verify(this.patientProxy).getPatientAgeGender(1);
         verify(this.noteProxy).findNotesByPatientId(1);
     }
 
@@ -235,13 +228,12 @@ class RiskServiceImplTest {
                 .content("Poids supérieur au poids recommandé. Cholestérol anormal")
                 .build();
 
-        PatientBean patient = PatientBean.builder()
-                .id(1)
-                .dateOfBirth(LocalDate.of(1950, 8, 22))
+        PatientAgeGenderBean patient = PatientAgeGenderBean.builder()
+                .age(60)
                 .gender(GenderEnum.M)
                 .build();
 
-        when(this.patientProxy.getPatientById(1)).thenReturn(patient);
+        when(this.patientProxy.getPatientAgeGender(1)).thenReturn(patient);
         when(this.noteProxy.findNotesByPatientId(1)).thenReturn(List.of(note));
 
         String result = riskService.calculPatientRisk(1);
@@ -249,7 +241,7 @@ class RiskServiceImplTest {
         assertNotNull(result);
         assertEquals("Borderline", result);
 
-        verify(this.patientProxy).getPatientById(1);
+        verify(this.patientProxy).getPatientAgeGender(1);
         verify(this.noteProxy).findNotesByPatientId(1);
     }
 
@@ -262,13 +254,12 @@ class RiskServiceImplTest {
                 .content("Poids supérieur au poids recommandé. Fumeur. Cholestérol anormal. Vertiges. Rechute.")
                 .build();
 
-        PatientBean patient = PatientBean.builder()
-                .id(1)
-                .dateOfBirth(LocalDate.of(1950, 8, 22))
+        PatientAgeGenderBean patient = PatientAgeGenderBean.builder()
+                .age(60)
                 .gender(GenderEnum.M)
                 .build();
 
-        when(this.patientProxy.getPatientById(1)).thenReturn(patient);
+        when(this.patientProxy.getPatientAgeGender(1)).thenReturn(patient);
         when(this.noteProxy.findNotesByPatientId(1)).thenReturn(List.of(note));
 
         String result = riskService.calculPatientRisk(1);
@@ -276,7 +267,7 @@ class RiskServiceImplTest {
         assertNotNull(result);
         assertEquals("InDanger", result);
 
-        verify(this.patientProxy).getPatientById(1);
+        verify(this.patientProxy).getPatientAgeGender(1);
         verify(this.noteProxy).findNotesByPatientId(1);
     }
 
@@ -289,13 +280,12 @@ class RiskServiceImplTest {
                 .content("Poids supérieur au poids recommandé. Fumeur. Cholestérol anormal. Vertiges. Rechute. Réaction allergique. Anticorps bas")
                 .build();
 
-        PatientBean patient = PatientBean.builder()
-                .id(1)
-                .dateOfBirth(LocalDate.of(1950, 8, 22))
+        PatientAgeGenderBean patient = PatientAgeGenderBean.builder()
+                .age(60)
                 .gender(GenderEnum.M)
                 .build();
 
-        when(this.patientProxy.getPatientById(1)).thenReturn(patient);
+        when(this.patientProxy.getPatientAgeGender(1)).thenReturn(patient);
         when(this.noteProxy.findNotesByPatientId(1)).thenReturn(List.of(note));
 
         String result = riskService.calculPatientRisk(1);
@@ -303,7 +293,7 @@ class RiskServiceImplTest {
         assertNotNull(result);
         assertEquals("EarlyOnset", result);
 
-        verify(this.patientProxy).getPatientById(1);
+        verify(this.patientProxy).getPatientAgeGender(1);
         verify(this.noteProxy).findNotesByPatientId(1);
     }
 

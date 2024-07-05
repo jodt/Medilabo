@@ -11,12 +11,10 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder
 @Data
-public class PatientBean {
-
-    private Integer id;
+public class PatientAgeGenderBean {
 
     private GenderEnum gender;
 
-    private LocalDate dateOfBirth;
+    int age;
 
 }

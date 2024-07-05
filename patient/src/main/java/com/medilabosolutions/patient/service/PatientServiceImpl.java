@@ -1,5 +1,6 @@
 package com.medilabosolutions.patient.service;
 
+import com.medilabosolutions.patient.dto.PatientAgeGenderDto;
 import com.medilabosolutions.patient.dto.PatientDto;
 import com.medilabosolutions.patient.exception.PatientAlreadyRegisteredException;
 import com.medilabosolutions.patient.exception.ResouceNotFoundException;
@@ -7,6 +8,7 @@ import com.medilabosolutions.patient.mapper.PatientMapper;
 import com.medilabosolutions.patient.model.Address;
 import com.medilabosolutions.patient.model.Patient;
 import com.medilabosolutions.patient.repository.PatientRepository;
+import com.medilabosolutions.patient.utils.AgeCalculator;
 import fr.xebia.extras.selma.Selma;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Example;
@@ -104,6 +106,17 @@ public class PatientServiceImpl implements PatientService {
             log.error("Patient with id {} not found", id);
             return new ResouceNotFoundException();
         });
+    }
+
+    @Override
+    public  PatientAgeGenderDto getPatientWithAgeAndGender (Integer id) throws ResouceNotFoundException {
+        PatientDto patientDto = this.getPatientById(id);
+        int patientAge = AgeCalculator.calculatePatientAge(patientDto.getDateOfBirth());
+
+        return PatientAgeGenderDto.builder()
+                .Age(patientAge)
+                .gender(patientDto.getGender())
+                .build();
     }
 
     private void throwExceptionIfPatientAlreadyRegistered(PatientDto patientDto) throws PatientAlreadyRegisteredException {

@@ -1,5 +1,6 @@
 package com.medilabosolutions.patient.controller;
 
+import com.medilabosolutions.patient.dto.PatientAgeGenderDto;
 import com.medilabosolutions.patient.dto.PatientDto;
 import com.medilabosolutions.patient.exception.PatientAlreadyRegisteredException;
 import com.medilabosolutions.patient.exception.ResouceNotFoundException;
@@ -55,6 +56,12 @@ public class PatientController {
     public ResponseEntity<Object> updatePatient(@RequestBody PatientDto patientDto) throws ResouceNotFoundException {
         log.info("PUT /update called -> start process to update a patient");
         return new ResponseEntity<>(this.patientService.updatePatient(patientDto), HttpStatus.OK);
+    }
+
+    @GetMapping("/patientAgeGender/{id}")
+    public PatientAgeGenderDto getPatientAgeGender(@PathVariable Integer id) throws ResouceNotFoundException {
+        log.info("GET /patientAge/{} called -> start process to get age of patient with id {}", id, id);
+        return this.patientService.getPatientWithAgeAndGender(id);
     }
 
 }
