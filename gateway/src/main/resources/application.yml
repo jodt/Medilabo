@@ -15,5 +15,10 @@ spring:
           predicates:
             - Path=/v1/api/notes/**
 
+        - id: risk
+          uri: ${RISK_URI:http://localhost:9003}
+          predicates:
+            - Path=/v1/api/risk/**
+
 server:
   port: 8888
