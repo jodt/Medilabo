@@ -10,6 +10,7 @@ import com.medilabosolutions.clientui.proxies.RiskReportProxy;
 import feign.FeignException;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -81,28 +82,32 @@ public class ClientController {
     }
 
     @GetMapping("/patient/infos/{id}")
-    public String getPatientInfos(Model model, @PathVariable Integer id, RedirectAttributes redirectAttributes) {
+    public String getPatientInfos(Model model, @PathVariable Integer id, RedirectAttributes redirectAttributes, Authentication authentication) {
         log.info("GET /patient/infos/{} -> start process to view information about patient number {}", id, id);
         try {
             PatientBean patient = this.patientProxy.getPatientById(id);
             model.addAttribute("patient", patient);
             model.addAttribute("newNote", new NoteBean());
 
-            try {
-                List<NoteBean> patientNotes = this.noteProxy.findNotesByPatientId(id);
-                model.addAttribute("notes", patientNotes);
-            } catch (FeignException ex) {
-                log.error("error" + ex);
-                model.addAttribute("noteServiceErrorMessage", "Note " + SERVICE_INACCESSIBLE_MESSAGE);
+            if(hasAdminRole(authentication)) {
+
+                try {
+                    List<NoteBean> patientNotes = this.noteProxy.findNotesByPatientId(id);
+                    model.addAttribute("notes", patientNotes);
+                } catch (FeignException ex) {
+                    log.error("error" + ex);
+                    model.addAttribute("noteServiceErrorMessage", "Note " + SERVICE_INACCESSIBLE_MESSAGE);
+                }
+
+                try {
+                    String riskLevel = this.riskReportProxy.getRiskPatient(id);
+                    model.addAttribute("risk", riskLevel);
+                } catch (FeignException e) {
+                    log.error(" passe dans le catch : error" + e);
+                    model.addAttribute("riskServiceErrorMessage", "Risk " + SERVICE_INACCESSIBLE_MESSAGE);
+                }
             }
 
-            try {
-                String riskLevel = this.riskReportProxy.getRiskPatient(id);
-                model.addAttribute("risk", riskLevel);
-            } catch (FeignException e) {
-                log.error(" passe dans le catch : error" + e);
-                model.addAttribute("riskServiceErrorMessage", "Risk " + SERVICE_INACCESSIBLE_MESSAGE);
-            }
 
             log.info("Patient information page displayed");
             return ("patientInfosPage");
@@ -151,5 +156,9 @@ public class ClientController {
             log.info("Redirect to home page");
             return ("redirect:/");
         }
+    }
+
+    private boolean hasAdminRole(Authentication authentication) {
+        return  authentication.getAuthorities().stream().anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"));
     }
 }
