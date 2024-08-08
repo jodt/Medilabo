@@ -18,6 +18,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
@@ -29,12 +30,14 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = ClientController.class)
+@WithMockUser(username = "doctor", roles = {"USER","ADMIN"})
 class ClientControllerTest {
 
     @Autowired
@@ -116,6 +119,7 @@ class ClientControllerTest {
         when(patientProxy.addPatient(patient)).thenReturn(new ResponseEntity<PatientBean>(patient, HttpStatus.CREATED));
 
         this.mockMvc.perform(post("/patient/add")
+                        .with(csrf())
                         .flashAttr("newPatient", patient))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("add?success"))
@@ -130,6 +134,7 @@ class ClientControllerTest {
         invalidPatient.setLastName(null);
 
         this.mockMvc.perform(post("/patient/add")
+                        .with(csrf())
                         .flashAttr("newPatient", invalidPatient))
                 .andExpect(status().isOk())
                 .andExpect(view().name("addPatientPage"))
@@ -143,6 +148,7 @@ class ClientControllerTest {
         when(patientProxy.addPatient(patient)).thenThrow(PatientAlreadyRegisteredException.class);
 
         this.mockMvc.perform(post("/patient/add")
+                        .with(csrf())
                         .flashAttr("newPatient", patient))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("add?error"));
@@ -250,6 +256,7 @@ class ClientControllerTest {
         when(this.patientProxy.updatePatient(patientUpdated)).thenReturn(new ResponseEntity<>(patientUpdated, HttpStatus.OK));
 
         this.mockMvc.perform(post("/patient/update")
+                        .with(csrf())
                         .flashAttr("patient", patientUpdated))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attribute("successMessage", SUCCESS_MESSAGE))
@@ -263,6 +270,7 @@ class ClientControllerTest {
         invalidPatient.setLastName(null);
 
         this.mockMvc.perform(post("/patient/update")
+                        .with(csrf())
                         .flashAttr("newPatient", invalidPatient))
                 .andExpect(status().isOk())
                 .andExpect(view().name("updatePatientPage"))
@@ -279,6 +287,7 @@ class ClientControllerTest {
         when(this.patientProxy.updatePatient(patientUpdated)).thenThrow(ResourceNotFoundException.class);
 
         this.mockMvc.perform(post("/patient/update")
+                        .with(csrf())
                         .flashAttr("patient", patientUpdated))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attribute("errorMessage", ERROR_MESSAGE))

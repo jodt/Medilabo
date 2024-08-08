@@ -11,14 +11,17 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = NoteController.class)
+@WithMockUser(username = "doctor", roles = {"USER","ADMIN"})
 class NoteControllerTest {
 
     @Autowired
@@ -41,6 +44,7 @@ class NoteControllerTest {
         when(this.noteProxy.addPatientNote(newNote)).thenReturn(new ResponseEntity<NoteBean>(newNote, HttpStatus.CREATED));
 
         this.mockMvc.perform(post("/note/add")
+                        .with(csrf())
                 .flashAttr("newNote", newNote))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/patient/infos/1"));
@@ -55,6 +59,7 @@ class NoteControllerTest {
                 .build();
 
         this.mockMvc.perform(post("/note/add")
+                        .with(csrf())
                 .flashAttr("newNote", newNote))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/patient/infos/1"))
