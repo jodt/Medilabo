@@ -17,6 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
@@ -97,7 +99,8 @@ class PatientControllerTest {
         mockMvc.perform((get(URL_PREFIX + "/findBySearchCriteria")
                         .param("lastName", "")
                         .param("firstName", "")
-                        .param("dateOfBirth", "")))
+                        .param("dateOfBirth", ""))
+                        .with(SecurityMockMvcRequestPostProcessors.jwt().authorities(new SimpleGrantedAuthority("ROLE_USER"))))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].id").value(1))
@@ -120,7 +123,8 @@ class PatientControllerTest {
 
         when(this.patientService.getPatientById(1)).thenReturn(patientDto);
 
-        mockMvc.perform(get(URL_PREFIX + "/findPatientById/1"))
+        mockMvc.perform(get(URL_PREFIX + "/findPatientById/1")
+                        .with(SecurityMockMvcRequestPostProcessors.jwt().authorities(new SimpleGrantedAuthority("ROLE_USER"))))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.lastName").value("TestPatient"))
@@ -141,7 +145,8 @@ class PatientControllerTest {
 
         when(this.patientService.getPatientById(1)).thenThrow(ResouceNotFoundException.class);
 
-        mockMvc.perform(get(URL_PREFIX + "/findPatientById/1"))
+        mockMvc.perform(get(URL_PREFIX + "/findPatientById/1")
+                        .with(SecurityMockMvcRequestPostProcessors.jwt().authorities(new SimpleGrantedAuthority("ROLE_USER"))))
                 .andExpect(status().isNotFound())
                 .andDo(print());
 
@@ -156,7 +161,8 @@ class PatientControllerTest {
 
         mockMvc.perform(post(URL_PREFIX + "/add")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(patientDto)))
+                        .content(objectMapper.writeValueAsString(patientDto))
+                        .with(SecurityMockMvcRequestPostProcessors.jwt().authorities(new SimpleGrantedAuthority("ROLE_USER"))))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.lastName").value("TestPatient"))
@@ -179,7 +185,8 @@ class PatientControllerTest {
 
         mockMvc.perform(post(URL_PREFIX + "/add")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(patientDto)))
+                        .content(objectMapper.writeValueAsString(patientDto))
+                        .with(SecurityMockMvcRequestPostProcessors.jwt().authorities(new SimpleGrantedAuthority("ROLE_USER"))))
                 .andExpect(status().isConflict())
                 .andDo(print());
 
@@ -194,7 +201,8 @@ class PatientControllerTest {
 
         mockMvc.perform(put(URL_PREFIX + "/update")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(patientDto)))
+                        .content(objectMapper.writeValueAsString(patientDto))
+                        .with(SecurityMockMvcRequestPostProcessors.jwt().authorities(new SimpleGrantedAuthority("ROLE_USER"))))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.lastName").value("TestPatient"))
@@ -218,7 +226,8 @@ class PatientControllerTest {
 
         mockMvc.perform(put(URL_PREFIX + "/update")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(patientDto)))
+                        .content(objectMapper.writeValueAsString(patientDto))
+                        .with(SecurityMockMvcRequestPostProcessors.jwt().authorities(new SimpleGrantedAuthority("ROLE_USER"))))
                 .andExpect(status().isNotFound())
                 .andDo(print());
 
