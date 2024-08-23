@@ -7,9 +7,12 @@ import com.medilabosolutions.note.service.NoteService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
@@ -23,7 +26,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(NoteController.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 class NoteControllerTest {
 
     @Autowired
@@ -54,7 +58,10 @@ class NoteControllerTest {
         List<NoteDto> patientNotes = List.of(noteDtoOne, noteDtoTwo);
 
         when(this.noteService.findAllNotesByPatientId(1)).thenReturn(patientNotes);
-        mockMvc.perform(get(URL_PREFIX + "/findByPatientId/1"))
+
+        mockMvc.perform(get(URL_PREFIX + "/findByPatientId/1")
+                        .with(SecurityMockMvcRequestPostProcessors.jwt()
+                                .authorities(new SimpleGrantedAuthority("ROLE_ADMIN"))))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(jsonPath("$[0].patientId").value(1))
@@ -67,8 +74,18 @@ class NoteControllerTest {
     }
 
     @Test
+    @DisplayName("Should not get notes by patient id -> forbidden")
+    void shouldNotFindNotesByPatientId() throws Exception {
+
+        mockMvc.perform(get(URL_PREFIX + "/findByPatientId/1")
+                        .with(SecurityMockMvcRequestPostProcessors.jwt()
+                                .authorities(new SimpleGrantedAuthority("ROLE_USER"))))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
     @DisplayName("should add a new note to a patient")
-    void addPatientNote() throws Exception {
+    void shouldAddPatientNote() throws Exception {
 
         NoteDto newNoteDto = NoteDto.builder()
                 .content("New note")
@@ -85,7 +102,9 @@ class NoteControllerTest {
 
         mockMvc.perform(post(URL_PREFIX + "/add")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(newNoteDto)))
+                        .content(objectMapper.writeValueAsString(newNoteDto))
+                        .with(SecurityMockMvcRequestPostProcessors.jwt()
+                                .authorities(new SimpleGrantedAuthority("ROLE_ADMIN"))))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value("id"))
                 .andExpect(jsonPath("$.patientId").value("1"))
@@ -94,4 +113,24 @@ class NoteControllerTest {
 
         verify(this.noteService).addNote(newNoteDto);
     }
+
+    @Test
+    @DisplayName("should not add a new note to a patient -> forbidden")
+    void shouldNotAddPatientNote() throws Exception {
+
+        NoteDto newNoteDto = NoteDto.builder()
+                .content("New note")
+                .patientId(1)
+                .build();
+
+        mockMvc.perform(post(URL_PREFIX + "/add")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(newNoteDto))
+                        .with(SecurityMockMvcRequestPostProcessors.jwt()
+                                .authorities(new SimpleGrantedAuthority("ROLE_USER"))))
+                .andExpect(status().isForbidden());
+
+    }
+
+
 }

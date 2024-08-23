@@ -2,7 +2,9 @@ package com.medilabosolutions.riskreport.controller;
 
 import com.medilabosolutions.riskreport.exceptions.ResourceNotFoundException;
 import com.medilabosolutions.riskreport.service.RiskService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,8 +21,9 @@ public class RiskController {
         this.riskService = riskService;
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}")
-    public String getRiskPatient(@PathVariable Integer id) throws ResourceNotFoundException {
+    public String getRiskPatient(@PathVariable Integer id, HttpServletRequest request) throws ResourceNotFoundException {
         log.info("Get v1/api/risk/{} called -> start the process to assess patient risk with id {}", id,id );
         String riskLevel = this.riskService.calculPatientRisk(id);
         log.info("Patient risk assessment completed successfully");
