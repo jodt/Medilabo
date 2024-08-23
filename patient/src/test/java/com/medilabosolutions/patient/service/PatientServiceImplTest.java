@@ -171,6 +171,7 @@ class PatientServiceImplTest {
                 .build();
 
         when(this.patientRepository.findById(1)).thenReturn(Optional.ofNullable(patient));
+        when(this.addressService.getAddressByNumberAndStreet(address.getNumber(),address.getStreet())).thenReturn(Optional.ofNullable(address));
         when(this.patientRepository.save(patientUpdated)).thenReturn(patientUpdated);
 
         Patient patientResult = this.patientService.updatePatient(patientDto);

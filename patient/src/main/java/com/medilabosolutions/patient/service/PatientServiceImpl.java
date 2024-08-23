@@ -70,7 +70,6 @@ public class PatientServiceImpl implements PatientService {
         this.throwExceptionIfPatientAlreadyRegistered(patientDto);
 
         Patient patientToSave = patientMapper.asPatient(patientDto);
-        Optional<Address> addressAlreadyRegistered = Optional.empty();
 
         this.checkAndSavePatientAddress(patientToSave);
 
@@ -91,7 +90,7 @@ public class PatientServiceImpl implements PatientService {
             log.info("Patient with id : {} was found", patientUpdated.getId());
             patientUpdated.setId(patientToUpdate.get().getId());
             this.checkAndSavePatientAddress(patientUpdated);
-            log.info(("Patent updated successfully"));
+            log.info("Patient updated successfully");
             return patientRepository.save(patientUpdated);
         } else {
             log.error("Patient with id : {} was not found", patientUpdated.getId());
@@ -129,15 +128,6 @@ public class PatientServiceImpl implements PatientService {
         log.info("Patient is not yet registered ");
     }
 
-    private Address saveNewAddress(Patient patient) {
-        Address newAddress = Address.builder()
-                .number(patient.getAddress().getNumber())
-                .street(patient.getAddress().getStreet())
-                .build();
-        this.addressService.saveAddress(newAddress);
-        return newAddress;
-    }
-
     private void checkAndSavePatientAddress(Patient patientToSave) {
         if (patientToSave.getAddress() != null && patientToSave.getAddress().getNumber() != null && !patientToSave.getAddress().getStreet().isEmpty()) {
             Optional<Address> addressAlreadyRegistered;
@@ -155,7 +145,7 @@ public class PatientServiceImpl implements PatientService {
                     },
                     () -> {
                         log.info("Save address to database");
-                        Address newAddress = saveNewAddress(patientToSave);
+                        Address newAddress = this.addressService.saveAddress(patientToSave.getAddress());
                         log.info("Add address to patient");
                         patientToSave.setAddress(newAddress);
                     });
