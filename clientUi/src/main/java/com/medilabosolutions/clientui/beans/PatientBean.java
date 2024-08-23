@@ -1,5 +1,6 @@
 package com.medilabosolutions.clientui.beans;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -31,6 +32,7 @@ public class PatientBean {
     @NotNull(message = "Gender is mandatory")
     private GenderEnum gender;
 
+    @Valid
     private AddressBean address;
 
     private String phoneNumber;
