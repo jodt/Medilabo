@@ -68,6 +68,11 @@
                                 <label for="streetName" class="form-label">Street Name</label>
                                 <input type="text" class="form-control" id="streetName" th:field="*{address.street}">
                             </div>
+                            <div
+                                    class="text-danger"
+                                    th:if="${#fields.hasErrors('address')}"
+                                    th:errors="*{address}">
+                            </div>
                             <div class="mb-2">
                                 <label for="phoneNumber" class="form-label">Phone number</label>
                                 <input type="text" class="form-control" id="phoneNumber" th:field="*{phoneNumber}">
