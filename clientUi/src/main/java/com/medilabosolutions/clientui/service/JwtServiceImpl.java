@@ -23,6 +23,12 @@ public class JwtServiceImpl implements JwtService {
         this.jwtEncoder = jwtEncoder;
     }
 
+
+    /**
+     * Generates a token with the information of the user who successfully logged in.
+     * @param authentication contains the information of an authenticated user.
+     * @return jwt token as a string
+     */
     @Override
     public String generateJwtToken(Authentication authentication) {
         Instant now = Instant.now();

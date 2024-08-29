@@ -43,6 +43,15 @@ public class PatientServiceImpl implements PatientService {
     }
 
 
+    /**
+     * Retrieve a list of patients based on the search elements provided.
+     * It can either perform on a single parameter like the first name if just this element is provided
+     * or several parameters like last name + first name, last name + date of birth.....
+     * @param lastName
+     * @param firstName
+     * @param dateOfBirth
+     * @return a list of patients
+     */
    @Override
     public List<PatientDto> findPatients(String lastName, String firstName, LocalDate dateOfBirth) {
 
@@ -60,6 +69,12 @@ public class PatientServiceImpl implements PatientService {
         return patients.stream().map(patientMapper::asPatientDto).collect(Collectors.toList());
     }
 
+    /**
+     * Register a new patient
+     * @param patientDto which represents a patient
+     * @return registered patient
+     * @throws PatientAlreadyRegisteredException if patient already registered
+     */
     @Override
     public Patient addPatient(PatientDto patientDto) throws PatientAlreadyRegisteredException {
 
@@ -72,11 +87,22 @@ public class PatientServiceImpl implements PatientService {
         return this.patientRepository.save(patientToSave);
     }
 
+    /**
+     * This method is used to retrieve a patient by first and last name
+     * @param patientDto which represents a patient
+     * @return a optional patient
+     */
     @Override
     public Optional<Patient> getPatientByLastNameAndFirstNameAndDateOfBirth(PatientDto patientDto) {
         return this.patientRepository.findByLastNameAndFirstNameAndDateOfBirth(patientDto.getLastName(),patientDto.getFirstName(),patientDto.getDateOfBirth());
     }
 
+    /**
+     * Update a patient
+     * @param patientDto which represents a patient
+     * @return the updated patient
+     * @throws ResouceNotFoundException if patient is not found
+     */
     @Override
     public Patient updatePatient(PatientDto patientDto) throws ResouceNotFoundException {
         Patient patientUpdated = patientMapper.asPatient(patientDto);
@@ -94,6 +120,12 @@ public class PatientServiceImpl implements PatientService {
         }
     }
 
+    /**
+     * Retrieve a patient by this id
+     * @param id which is a unique identifier for each patient
+     * @return PatientDto which represents the patient
+     * @throws ResouceNotFoundException if patient is not found
+     */
     @Override
     public PatientDto getPatientById(Integer id) throws ResouceNotFoundException {
         log.info("Try to find patient with id : {}", id);
@@ -103,6 +135,12 @@ public class PatientServiceImpl implements PatientService {
         });
     }
 
+    /**
+     * Retrieve only the age and gender of a patient
+     * @param id which is a unique identifier for each patient
+     * @return PatientAgeGenderDto which contains the age and gender of the patient
+     * @throws ResouceNotFoundException if patient is not found
+     */
     @Override
     public  PatientAgeGenderDto getPatientWithAgeAndGender (Integer id) throws ResouceNotFoundException {
         PatientDto patientDto = this.getPatientById(id);
@@ -114,6 +152,7 @@ public class PatientServiceImpl implements PatientService {
                 .build();
     }
 
+
     private void throwExceptionIfPatientAlreadyRegistered(PatientDto patientDto) throws PatientAlreadyRegisteredException {
         log.info("Check if patient is already registered");
         Optional<Patient> patient = this.getPatientByLastNameAndFirstNameAndDateOfBirth(patientDto);
@@ -124,6 +163,11 @@ public class PatientServiceImpl implements PatientService {
         log.info("Patient is not yet registered ");
     }
 
+    /**
+     * Checks if the address of the new patient is already registered in the database,
+     * otherwise added it before associating it with the patient
+     * @param patientToSave new patient
+     */
     private void checkAndSavePatientAddress(Patient patientToSave) {
         if (patientToSave.getAddress() != null && patientToSave.getAddress().getNumber() != null && !patientToSave.getAddress().getStreet().isEmpty()) {
             Optional<Address> addressAlreadyRegistered;

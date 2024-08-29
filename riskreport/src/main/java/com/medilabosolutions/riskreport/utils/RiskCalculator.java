@@ -7,10 +7,19 @@ import com.medilabosolutions.riskreport.enums.RiskEnum;
 
 import java.util.List;
 
+/**
+ * Utility class that provides methods for calculating
+ * the patient's risk of developing diabetes
+ */
 public class RiskCalculator {
 
     private final static List<String> RISK_TERMS = List.of("Hémoglobine A1C","Microalbumine","Taille", "Poids", "Fumeur", "Fumeuse", "Anormal", "Cholestérol", "Vertiges", "Rechute", "Réaction", "Anticorps");
 
+    /**
+     * Returns the number of trigger terms found in notes to calculate risk
+     * @param patientNotes all patient notes
+     * @return the number of trigger terms found
+     */
     public static long calculateNumberOfRiskTerms(List<NoteBean> patientNotes) {
         return patientNotes.stream()
                 .flatMap(note -> RISK_TERMS.stream()
@@ -18,6 +27,13 @@ public class RiskCalculator {
                 .count();
     }
 
+    /**
+     * Establishes a profile of the patient (man under 30, woman under 30, patient over 30)
+     * based on their age and gender which will be used to calculate the risk level
+     * @param patientAge
+     * @param patientGender
+     * @return
+     */
     public static RiskProfilEnum defineRiskProfile(int patientAge, GenderEnum patientGender) {
         if(patientAge <= 30 && patientGender.equals(GenderEnum.M)){
             return RiskProfilEnum.MAN_UNDER_THIRTY;
@@ -28,6 +44,12 @@ public class RiskCalculator {
         }
     }
 
+    /**
+     * Establishes the risk level based on the patient profile and the number of terms found
+     * @param riskProfile
+     * @param numberOfRiskTerms
+     * @return the risk level
+     */
     public static String defineLevelRiskBasedOnProfile(RiskProfilEnum riskProfile, int numberOfRiskTerms) {
         switch (riskProfile) {
             case MAN_UNDER_THIRTY -> {return defineRiskForManUnderThirty(numberOfRiskTerms);}

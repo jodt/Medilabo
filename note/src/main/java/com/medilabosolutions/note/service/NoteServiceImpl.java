@@ -22,6 +22,11 @@ public class NoteServiceImpl implements NoteService {
         this.noteRepository = noteRepository;
     }
 
+    /**
+     * Retrieves the list of medical notes concerning a patient.
+     * @param id unique identifier for each patient
+     * @return list of note
+     */
     @Override
     public List<NoteDto> findAllNotesByPatientId(Integer id) {
         log.info("Try to find notes for the patient with id {}", id);
@@ -29,6 +34,11 @@ public class NoteServiceImpl implements NoteService {
         return patientNotes;
     }
 
+    /**
+     * Records a new note for a patient
+     * @param noteDto the new note to save
+     * @return saved note
+     */
     @Override
     public Note addNote(NoteDto noteDto) {
         log.info("Try to add note for the patient with id {}", noteDto.getPatientId());

@@ -27,6 +27,12 @@ public class RiskServiceImpl implements RiskService {
         this.noteProxy = noteProxy;
     }
 
+    /**
+     * Retrieves the level of risk for the patient to develop diabetes
+     * @param id unique patient identifier
+     * @return the level of risk
+     * @throws ResourceNotFoundException
+     */
     public String calculPatientRisk(Integer id) throws ResourceNotFoundException {
         log.info("Try to assess patient risk with id {}", id);
 
