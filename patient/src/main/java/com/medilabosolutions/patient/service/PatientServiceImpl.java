@@ -42,10 +42,6 @@ public class PatientServiceImpl implements PatientService {
         this.addressService = addressService;
     }
 
-    @Override
-    public List<PatientDto> findAllPatients() {
-        return this.patientRepository.findAll().stream().map(patientMapper::asPatientDto).collect(Collectors.toList());
-    }
 
    @Override
     public List<PatientDto> findPatients(String lastName, String firstName, LocalDate dateOfBirth) {
