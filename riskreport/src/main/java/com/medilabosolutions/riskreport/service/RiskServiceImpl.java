@@ -21,10 +21,13 @@ public class RiskServiceImpl implements RiskService {
 
     private final NoteProxy noteProxy;
 
+    private final RiskCalculator riskCalculator;
 
-    public RiskServiceImpl(PatientProxy patientProxy, NoteProxy noteProxy) {
+
+    public RiskServiceImpl(PatientProxy patientProxy, NoteProxy noteProxy, RiskCalculator riskCalculator) {
         this.patientProxy = patientProxy;
         this.noteProxy = noteProxy;
+        this.riskCalculator = riskCalculator;
     }
 
     /**
@@ -42,12 +45,12 @@ public class RiskServiceImpl implements RiskService {
         log.info("The patient's age is {} years old", patient.getAge());
         GenderEnum patientGender = patient.getGender();
         log.info("The gender of the patient is : {}",patientGender.toString());
-        int numbersOfRiskTerms = (int) RiskCalculator.calculateNumberOfRiskTerms(patientNotes);
+        int numbersOfRiskTerms = (int) this.riskCalculator.calculateNumberOfRiskTerms(patientNotes);
 
-        RiskProfilEnum riskProfile = RiskCalculator.defineRiskProfile(patient.getAge(), patientGender);
+        RiskProfilEnum riskProfile = this.riskCalculator.defineRiskProfile(patient.getAge(), patientGender);
         log.info("The patient profile is {}", riskProfile.toString());
 
-        String riskLevel =  RiskCalculator.defineLevelRiskBasedOnProfile(riskProfile, numbersOfRiskTerms);
+        String riskLevel =  this.riskCalculator.defineLevelRiskBasedOnProfile(riskProfile, numbersOfRiskTerms);
         log.info("The patient risk level is {}", riskLevel);
         return riskLevel;
     }
