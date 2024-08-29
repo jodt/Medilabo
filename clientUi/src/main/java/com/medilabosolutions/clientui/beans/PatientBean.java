@@ -1,5 +1,6 @@
 package com.medilabosolutions.clientui.beans;
 
+import com.medilabosolutions.clientui.validation.ValidDateOfBirth;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -27,6 +28,7 @@ public class PatientBean {
     private String firstName;
 
     @NotNull(message = "Date Of Birth is mandatory")
+    @ValidDateOfBirth
     private LocalDate dateOfBirth;
 
     @NotNull(message = "Gender is mandatory")
