@@ -60,6 +60,8 @@ services:
     depends_on:
       - gateway
       - patient
+      - note
+      - risk
     build: ./clientUi
     environment:
       GATEWAY_URI: http://gateway:8888
@@ -68,6 +70,7 @@ services:
 
   risk:
     depends_on:
+      - gateway
       - note
       - patient
     build: ./riskreport
