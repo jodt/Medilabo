@@ -42,6 +42,12 @@ public class ClientController {
         this.riskReportProxy = riskReportProxy;
     }
 
+    @GetMapping("/login")
+    public String showLoginForm(){
+        log.info("GET /login called -> display login page");
+        return ("login");
+    }
+
     @GetMapping("/")
     public String allPatientByCriteria(Model model,
                                        @RequestParam(defaultValue = "") String firstName,

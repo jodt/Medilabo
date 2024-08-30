@@ -29,12 +29,13 @@ public class SecurityConfig {
         http
                 .csrf().disable()
                 .authorizeHttpRequests(authorize ->
-                        authorize.requestMatchers("/login").permitAll()
+                        authorize.requestMatchers("/assets/**","/webjars/**").permitAll()
+                                .requestMatchers("/login").permitAll()
                                 .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults())
-                .formLogin(formlogin ->
-                        formlogin.successHandler(authenticationSuccessHandler()));
-
+                .formLogin(formlogin -> formlogin
+                        .loginPage("/login")
+                        .successHandler(authenticationSuccessHandler()));
         return http.build();
     }
 
