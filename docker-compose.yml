@@ -72,8 +72,7 @@ services:
       - patient
     build: ./riskreport
     environment:
-      PATIENT_URI: http://patient:9001
-      NOTE_URI: http://note:9002
+      GATEWAY_URI: http://gateway:8888
     ports:
       - '9003:9003'
 
