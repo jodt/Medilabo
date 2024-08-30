@@ -3,6 +3,7 @@ package com.medilabosolutions.riskreport.service;
 import com.medilabosolutions.riskreport.beans.GenderEnum;
 import com.medilabosolutions.riskreport.beans.NoteBean;
 import com.medilabosolutions.riskreport.beans.PatientAgeGenderBean;
+import com.medilabosolutions.riskreport.configuration.RiskTermsProperties;
 import com.medilabosolutions.riskreport.exceptions.ResourceNotFoundException;
 import com.medilabosolutions.riskreport.proxies.NoteProxy;
 import com.medilabosolutions.riskreport.proxies.PatientProxy;
@@ -13,7 +14,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -30,8 +30,12 @@ class RiskServiceImplTest {
     @Mock
     NoteProxy noteProxy;
 
+    @Mock
+    RiskTermsProperties riskTermsProperties;
     @InjectMocks
     RiskServiceImpl riskService;
+
+    private final static List<String> RISK_TERMS = List.of("Hémoglobine A1C","Microalbumine","Taille", "Poids", "Fumeur", "Fumeuse", "Anormal", "Cholestérol", "Vertiges", "Rechute", "Réaction", "Anticorps");
 
     @Test
     @DisplayName("Should calculate the risk for a man under thirty -> None")
@@ -49,6 +53,7 @@ class RiskServiceImplTest {
 
         when(this.patientProxy.getPatientAgeGender(1)).thenReturn(patient);
         when(this.noteProxy.findNotesByPatientId(1)).thenReturn(List.of(note));
+        when(this.riskTermsProperties.getTerms()).thenReturn(RISK_TERMS);
 
         String result = riskService.calculPatientRisk(1);
 
@@ -57,6 +62,7 @@ class RiskServiceImplTest {
 
         verify(this.patientProxy).getPatientAgeGender(1);
         verify(this.noteProxy).findNotesByPatientId(1);
+        verify(this.riskTermsProperties).getTerms();
     }
 
     @Test
@@ -76,6 +82,7 @@ class RiskServiceImplTest {
 
         when(this.patientProxy.getPatientAgeGender(1)).thenReturn(patient);
         when(this.noteProxy.findNotesByPatientId(1)).thenReturn(List.of(note));
+        when(this.riskTermsProperties.getTerms()).thenReturn(RISK_TERMS);
 
         String result = riskService.calculPatientRisk(1);
 
@@ -84,6 +91,7 @@ class RiskServiceImplTest {
 
         verify(this.patientProxy).getPatientAgeGender(1);
         verify(this.noteProxy).findNotesByPatientId(1);
+        verify(this.riskTermsProperties).getTerms();
     }
 
     @Test
@@ -103,6 +111,7 @@ class RiskServiceImplTest {
 
         when(this.patientProxy.getPatientAgeGender(1)).thenReturn(patient);
         when(this.noteProxy.findNotesByPatientId(1)).thenReturn(List.of(note));
+        when(this.riskTermsProperties.getTerms()).thenReturn(RISK_TERMS);
 
         String result = riskService.calculPatientRisk(1);
 
@@ -111,6 +120,7 @@ class RiskServiceImplTest {
 
         verify(this.patientProxy).getPatientAgeGender(1);
         verify(this.noteProxy).findNotesByPatientId(1);
+        verify(this.riskTermsProperties).getTerms();
     }
 
     @Test
@@ -129,6 +139,7 @@ class RiskServiceImplTest {
 
         when(this.patientProxy.getPatientAgeGender(1)).thenReturn(patient);
         when(this.noteProxy.findNotesByPatientId(1)).thenReturn(List.of(note));
+        when(this.riskTermsProperties.getTerms()).thenReturn(RISK_TERMS);
 
         String result = riskService.calculPatientRisk(1);
 
@@ -137,6 +148,7 @@ class RiskServiceImplTest {
 
         verify(this.patientProxy).getPatientAgeGender(1);
         verify(this.noteProxy).findNotesByPatientId(1);
+        verify(this.riskTermsProperties).getTerms();
     }
 
     @Test
@@ -156,6 +168,7 @@ class RiskServiceImplTest {
 
         when(this.patientProxy.getPatientAgeGender(1)).thenReturn(patient);
         when(this.noteProxy.findNotesByPatientId(1)).thenReturn(List.of(note));
+        when(this.riskTermsProperties.getTerms()).thenReturn(RISK_TERMS);
 
         String result = riskService.calculPatientRisk(1);
 
@@ -164,6 +177,7 @@ class RiskServiceImplTest {
 
         verify(this.patientProxy).getPatientAgeGender(1);
         verify(this.noteProxy).findNotesByPatientId(1);
+        verify(this.riskTermsProperties).getTerms();
     }
 
     @Test
@@ -183,6 +197,7 @@ class RiskServiceImplTest {
 
         when(this.patientProxy.getPatientAgeGender(1)).thenReturn(patient);
         when(this.noteProxy.findNotesByPatientId(1)).thenReturn(List.of(note));
+        when(this.riskTermsProperties.getTerms()).thenReturn(RISK_TERMS);
 
         String result = riskService.calculPatientRisk(1);
 
@@ -191,6 +206,7 @@ class RiskServiceImplTest {
 
         verify(this.patientProxy).getPatientAgeGender(1);
         verify(this.noteProxy).findNotesByPatientId(1);
+        verify(this.riskTermsProperties).getTerms();
     }
 
     @Test
@@ -217,6 +233,7 @@ class RiskServiceImplTest {
 
         verify(this.patientProxy).getPatientAgeGender(1);
         verify(this.noteProxy).findNotesByPatientId(1);
+
     }
 
     @Test
@@ -235,6 +252,7 @@ class RiskServiceImplTest {
 
         when(this.patientProxy.getPatientAgeGender(1)).thenReturn(patient);
         when(this.noteProxy.findNotesByPatientId(1)).thenReturn(List.of(note));
+        when(this.riskTermsProperties.getTerms()).thenReturn(RISK_TERMS);
 
         String result = riskService.calculPatientRisk(1);
 
@@ -243,6 +261,7 @@ class RiskServiceImplTest {
 
         verify(this.patientProxy).getPatientAgeGender(1);
         verify(this.noteProxy).findNotesByPatientId(1);
+        verify(this.riskTermsProperties).getTerms();
     }
 
     @Test
@@ -261,6 +280,7 @@ class RiskServiceImplTest {
 
         when(this.patientProxy.getPatientAgeGender(1)).thenReturn(patient);
         when(this.noteProxy.findNotesByPatientId(1)).thenReturn(List.of(note));
+        when(this.riskTermsProperties.getTerms()).thenReturn(RISK_TERMS);
 
         String result = riskService.calculPatientRisk(1);
 
@@ -269,6 +289,7 @@ class RiskServiceImplTest {
 
         verify(this.patientProxy).getPatientAgeGender(1);
         verify(this.noteProxy).findNotesByPatientId(1);
+        verify(this.riskTermsProperties).getTerms();
     }
 
     @Test
@@ -287,6 +308,7 @@ class RiskServiceImplTest {
 
         when(this.patientProxy.getPatientAgeGender(1)).thenReturn(patient);
         when(this.noteProxy.findNotesByPatientId(1)).thenReturn(List.of(note));
+        when(this.riskTermsProperties.getTerms()).thenReturn(RISK_TERMS);
 
         String result = riskService.calculPatientRisk(1);
 
@@ -295,6 +317,7 @@ class RiskServiceImplTest {
 
         verify(this.patientProxy).getPatientAgeGender(1);
         verify(this.noteProxy).findNotesByPatientId(1);
+        verify(this.riskTermsProperties).getTerms();
     }
 
 }

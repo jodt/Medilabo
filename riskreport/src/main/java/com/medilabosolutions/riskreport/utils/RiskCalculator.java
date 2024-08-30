@@ -3,7 +3,6 @@ package com.medilabosolutions.riskreport.utils;
 import com.medilabosolutions.riskreport.beans.GenderEnum;
 import com.medilabosolutions.riskreport.beans.NoteBean;
 import com.medilabosolutions.riskreport.beans.RiskProfilEnum;
-import com.medilabosolutions.riskreport.configuration.RiskTermsProperties;
 import com.medilabosolutions.riskreport.enums.RiskEnum;
 import org.springframework.stereotype.Component;
 
@@ -15,19 +14,13 @@ import java.util.List;
  */
 @Component
 public class RiskCalculator {
-    private final RiskTermsProperties riskTermsProperties;
-
-    public RiskCalculator(RiskTermsProperties riskTermsProperties) {
-        this.riskTermsProperties = riskTermsProperties;
-    }
 
     /**
      * Returns the number of trigger terms found in notes to calculate risk
      * @param patientNotes all patient notes
      * @return the number of trigger terms found
      */
-    public long calculateNumberOfRiskTerms(List<NoteBean> patientNotes) {
-        List<String> riskTerms = this.riskTermsProperties.getTerms();
+    public static long calculateNumberOfRiskTerms(List<NoteBean> patientNotes, List<String> riskTerms) {
         return patientNotes.stream()
                 .flatMap(note -> riskTerms.stream()
                         .filter(term -> note.getContent().toLowerCase().contains(term.toLowerCase())))
@@ -41,7 +34,7 @@ public class RiskCalculator {
      * @param patientGender
      * @return
      */
-    public  RiskProfilEnum defineRiskProfile(int patientAge, GenderEnum patientGender) {
+    public static RiskProfilEnum defineRiskProfile(int patientAge, GenderEnum patientGender) {
         if(patientAge <= 30 && patientGender.equals(GenderEnum.M)){
             return RiskProfilEnum.MAN_UNDER_THIRTY;
         } else if (patientAge <= 30 && patientGender.equals(GenderEnum.F)){
@@ -57,7 +50,7 @@ public class RiskCalculator {
      * @param numberOfRiskTerms
      * @return the risk level
      */
-    public String defineLevelRiskBasedOnProfile(RiskProfilEnum riskProfile, int numberOfRiskTerms) {
+    public static  String defineLevelRiskBasedOnProfile(RiskProfilEnum riskProfile, int numberOfRiskTerms) {
         switch (riskProfile) {
             case MAN_UNDER_THIRTY -> {return defineRiskForManUnderThirty(numberOfRiskTerms);}
             case WOMAN_UNDER_THIRTY -> {return defineRiskForWomanUnderThirty(numberOfRiskTerms);}
@@ -65,7 +58,7 @@ public class RiskCalculator {
         }
     }
 
-    private String defineRiskForManUnderThirty(int numberOfRiskTerms) {
+    private static String defineRiskForManUnderThirty(int numberOfRiskTerms) {
         if (3<=numberOfRiskTerms && numberOfRiskTerms<=4) {
             return RiskEnum.IN_DANGER.getDisplayName();
         } else if (numberOfRiskTerms>=5){
@@ -75,7 +68,7 @@ public class RiskCalculator {
         }
     }
 
-    private String defineRiskForWomanUnderThirty(int numberOfRiskTerms){
+    private static String defineRiskForWomanUnderThirty(int numberOfRiskTerms){
         if (4<=numberOfRiskTerms && numberOfRiskTerms<=6) {
             return RiskEnum.IN_DANGER.getDisplayName();
         } else if (numberOfRiskTerms>=7){
@@ -85,7 +78,7 @@ public class RiskCalculator {
         }
     }
 
-    private String defineRiskForPatientOverThirty(int numberOfRiskTerms){
+    private static String defineRiskForPatientOverThirty(int numberOfRiskTerms){
         if (2<=numberOfRiskTerms && numberOfRiskTerms<=5) {
             return RiskEnum.BORDERLINE.getDisplayName();
         } else if (6<=numberOfRiskTerms && numberOfRiskTerms<=7){

@@ -4,6 +4,7 @@ import com.medilabosolutions.riskreport.beans.GenderEnum;
 import com.medilabosolutions.riskreport.beans.NoteBean;
 import com.medilabosolutions.riskreport.beans.PatientAgeGenderBean;
 import com.medilabosolutions.riskreport.beans.RiskProfilEnum;
+import com.medilabosolutions.riskreport.configuration.RiskTermsProperties;
 import com.medilabosolutions.riskreport.exceptions.ResourceNotFoundException;
 import com.medilabosolutions.riskreport.proxies.NoteProxy;
 import com.medilabosolutions.riskreport.proxies.PatientProxy;
@@ -18,16 +19,14 @@ import java.util.List;
 public class RiskServiceImpl implements RiskService {
 
     private final PatientProxy patientProxy;
-
     private final NoteProxy noteProxy;
+    private final RiskTermsProperties riskTermsProperties;
 
-    private final RiskCalculator riskCalculator;
 
-
-    public RiskServiceImpl(PatientProxy patientProxy, NoteProxy noteProxy, RiskCalculator riskCalculator) {
+    public RiskServiceImpl(PatientProxy patientProxy, NoteProxy noteProxy, RiskTermsProperties riskTermsProperties) {
         this.patientProxy = patientProxy;
         this.noteProxy = noteProxy;
-        this.riskCalculator = riskCalculator;
+        this.riskTermsProperties = riskTermsProperties;
     }
 
     /**
@@ -45,12 +44,12 @@ public class RiskServiceImpl implements RiskService {
         log.info("The patient's age is {} years old", patient.getAge());
         GenderEnum patientGender = patient.getGender();
         log.info("The gender of the patient is : {}",patientGender.toString());
-        int numbersOfRiskTerms = (int) this.riskCalculator.calculateNumberOfRiskTerms(patientNotes);
+        int numbersOfRiskTerms = (int) RiskCalculator.calculateNumberOfRiskTerms(patientNotes, riskTermsProperties.getTerms());
 
-        RiskProfilEnum riskProfile = this.riskCalculator.defineRiskProfile(patient.getAge(), patientGender);
+        RiskProfilEnum riskProfile = RiskCalculator.defineRiskProfile(patient.getAge(), patientGender);
         log.info("The patient profile is {}", riskProfile.toString());
 
-        String riskLevel =  this.riskCalculator.defineLevelRiskBasedOnProfile(riskProfile, numbersOfRiskTerms);
+        String riskLevel =  RiskCalculator.defineLevelRiskBasedOnProfile(riskProfile, numbersOfRiskTerms);
         log.info("The patient risk level is {}", riskLevel);
         return riskLevel;
     }
