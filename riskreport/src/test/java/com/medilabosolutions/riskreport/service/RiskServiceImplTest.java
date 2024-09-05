@@ -1,6 +1,6 @@
 package com.medilabosolutions.riskreport.service;
 
-import com.medilabosolutions.riskreport.beans.GenderEnum;
+import com.medilabosolutions.riskreport.enums.GenderEnum;
 import com.medilabosolutions.riskreport.beans.NoteBean;
 import com.medilabosolutions.riskreport.beans.PatientAgeGenderBean;
 import com.medilabosolutions.riskreport.configuration.RiskTermsProperties;

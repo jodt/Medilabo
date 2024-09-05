@@ -1,8 +1,8 @@
 package com.medilabosolutions.riskreport.utils;
 
-import com.medilabosolutions.riskreport.beans.GenderEnum;
+import com.medilabosolutions.riskreport.enums.GenderEnum;
 import com.medilabosolutions.riskreport.beans.NoteBean;
-import com.medilabosolutions.riskreport.beans.RiskProfilEnum;
+import com.medilabosolutions.riskreport.enums.RiskProfilEnum;
 import com.medilabosolutions.riskreport.enums.RiskEnum;
 import org.springframework.stereotype.Component;
 

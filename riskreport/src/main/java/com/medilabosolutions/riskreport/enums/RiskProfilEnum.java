@@ -1,4 +1,4 @@
-package com.medilabosolutions.riskreport.beans;
+package com.medilabosolutions.riskreport.enums;
 
 public enum RiskProfilEnum {
     PATIENT_OVER_THIRTY,
