@@ -18,12 +18,13 @@ The MedilaboSolutions project is based on a microservices architecture. It consi
 ![alt architecture](clientUi/src/main/resources/static/assets/architecture.png)
 
 ## Security
-The project uses spring security. When the user successfully authenticates, a jwt token is generated and transmitted in the header of each request. The gateway and each microservice checks the validity of the token before providing the requested resources
+The project uses spring security. When the user successfully authenticates, a jwt token is generated and transmitted in the header of each request. The gateway and each microservice checks the validity of the token before providing the requested resources.
 
 ## Using MedilaboSolutions
 * Clone the project
 * Open it in your IDE
 * Run each microservices or use docker-compose up command if you are using docker
+* Type http://localhost:8080 into your browser
 * Databases are created and test data is inserted
 * Have fun
 
@@ -49,9 +50,9 @@ The project uses spring security. When the user successfully authenticates, a jw
 ![alt patient info page view for administrative page](clientUi/src/main/resources/static/assets/patient_info_user.png)
 
 ## Green Code Suggestions
-* Store the risk level rather than recalculating it each time you consult the patient's information. Only recalculate and update it if a new note is added
-* Improve the risk calculation algorithm
-* Do not display gender, address and telephone number on the home page since this information is visible on the patient information page
+* Store the risk level rather than recalculating it each time you consult the patient's information. Only recalculate and update it if a new note is added.
+* Improve the risk calculation algorithm.
+* Do not display gender, address and telephone number on the home page since this information is visible on the patient information page.
 
 
 ## Area of Improvement
