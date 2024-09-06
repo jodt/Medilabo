@@ -29,7 +29,7 @@ import java.util.List;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -100,6 +100,8 @@ class ClientControllerTest {
                 .andExpect(model().attribute("patients", hasSize(1)))
                 .andExpect(model().attribute("patients", hasItem(patient)))
                 .andExpect(view().name("homePage"));
+
+        verify(this.patientProxy).getBySearchCriteria(any(),any(),any());
     }
 
     @Test
@@ -124,6 +126,8 @@ class ClientControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("add?success"))
                 .andDo(print());
+
+        verify(this.patientProxy).addPatient(patient);
     }
 
     @Test
@@ -139,6 +143,8 @@ class ClientControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("addPatientPage"))
                 .andExpect(model().attributeHasFieldErrors("newPatient", "lastName"));
+
+        verify(this.patientProxy, never()).addPatient(patient);
     }
 
     @Test
@@ -152,6 +158,8 @@ class ClientControllerTest {
                         .flashAttr("newPatient", patient))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("add?error"));
+
+        verify(this.patientProxy).addPatient(patient);
     }
 
     @Test
@@ -172,6 +180,33 @@ class ClientControllerTest {
                 .andExpect(model().attribute("risk", "None"))
                 .andDo(print());
 
+        verify(this.patientProxy).getPatientById(patient.getId());
+        verify(this.noteProxy).findNotesByPatientId(patient.getId());
+        verify(this.riskReportProxy).getRiskPatient(patient.getId());
+
+    }
+
+    @Test
+    @WithMockUser(roles = "USER")
+    @DisplayName("should get patient info without note and risk -> user don't have ADMIN role")
+    void shouldGetPatientInfosWithoutNoteAndRisk() throws Exception {
+
+        when(this.patientProxy.getPatientById(patient.getId())).thenReturn(patient);
+        when(this.noteProxy.findNotesByPatientId(patient.getId())).thenReturn(List.of(notes));
+        when(this.riskReportProxy.getRiskPatient(patient.getId())).thenReturn("None");
+
+        this.mockMvc.perform(get("/patient/infos/{id}", patient.getId()))
+                .andExpect(status().isOk())
+                .andExpect(view().name("patientInfosPage"))
+                .andExpect(model().attribute("patient", patient))
+                .andExpect(model().attribute("newNote", new NoteBean()))
+                .andExpect(model().attributeDoesNotExist("notes","risk"))
+                .andDo(print());
+
+        verify(this.patientProxy).getPatientById(patient.getId());
+        verify(this.noteProxy, never()).findNotesByPatientId(patient.getId());
+        verify(this.riskReportProxy, never()).getRiskPatient(patient.getId());
+
     }
 
     @Test
@@ -184,6 +219,8 @@ class ClientControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attribute("errorMessage", ERROR_MESSAGE))
                 .andExpect(redirectedUrl("/"));
+
+        verify(this.patientProxy).getPatientById(100);
     }
 
     @Test
@@ -203,6 +240,10 @@ class ClientControllerTest {
                 .andExpect(model().attribute("notes", hasItem(notes)))
                 .andExpect(model().attribute("riskServiceErrorMessage", "Risk " + SERVICE_INACCESSIBLE_MESSAGE))
                 .andDo(print());
+
+        verify(this.patientProxy).getPatientById(patient.getId());
+        verify(this.noteProxy).findNotesByPatientId(patient.getId());
+        verify(this.riskReportProxy).getRiskPatient(patient.getId());
     }
 
     @Test
@@ -221,6 +262,10 @@ class ClientControllerTest {
                 .andExpect(model().attribute("noteServiceErrorMessage", "Note " + SERVICE_INACCESSIBLE_MESSAGE))
                 .andExpect(model().attribute("riskServiceErrorMessage", "Risk " + SERVICE_INACCESSIBLE_MESSAGE))
                 .andDo(print());
+
+        verify(this.patientProxy).getPatientById(patient.getId());
+        verify(this.noteProxy).findNotesByPatientId(patient.getId());
+        verify(this.riskReportProxy).getRiskPatient(patient.getId());
     }
 
     @Test
@@ -233,6 +278,8 @@ class ClientControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(model().attribute("patient", patient))
                 .andExpect(view().name("updatePatientPage"));
+
+        verify(this.patientProxy).getPatientById(patient.getId());
     }
 
     @Test
@@ -245,6 +292,8 @@ class ClientControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attribute("errorMessage", ERROR_MESSAGE))
                 .andExpect(redirectedUrl("/"));
+
+        verify(this.patientProxy).getPatientById(100);
     }
 
     @Test
@@ -261,6 +310,8 @@ class ClientControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attribute("successMessage", SUCCESS_MESSAGE))
                 .andExpect(redirectedUrl("/"));
+
+        verify(this.patientProxy).updatePatient(patientUpdated);
     }
 
     @Test
@@ -276,6 +327,7 @@ class ClientControllerTest {
                 .andExpect(view().name("updatePatientPage"))
                 .andExpect(model().attributeHasFieldErrors("patient", "lastName"));
 
+        verify(this.patientProxy, never()).updatePatient(invalidPatient);
     }
 
     @Test
@@ -292,5 +344,7 @@ class ClientControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attribute("errorMessage", ERROR_MESSAGE))
                 .andExpect(redirectedUrl("/"));
+
+        verify(this.patientProxy).updatePatient(patientUpdated);
     }
 }
