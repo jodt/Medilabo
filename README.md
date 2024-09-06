@@ -34,11 +34,11 @@ The project uses spring security. When the user successfully authenticates, a jw
 
 * Home Page
 
-![alt login page](clientUi/src/main/resources/static/assets/homepage.png)
+![alt home page](clientUi/src/main/resources/static/assets/home_page.png)
 
 * Add Patient Page
 
-![alt login page](clientUi/src/main/resources/static/assets/addpatientform.png)
+![alt add patient page](clientUi/src/main/resources/static/assets/add_patient_form.png)
 
 * Patient Info Page (View Medical Staff)
 
@@ -46,7 +46,7 @@ The project uses spring security. When the user successfully authenticates, a jw
 
 * Patient Info Page (View Administrative Staff)
 
-![alt login page](clientUi/src/main/resources/static/assets/patient_info_user.png)
+![alt patient info page view for administrative page](clientUi/src/main/resources/static/assets/patient_info_user.png)
 
 ## Green Code Suggestions
 * Store the risk level rather than recalculating it each time you consult the patient's information. Only recalculate and update it if a new note is added
