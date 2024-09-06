@@ -50,7 +50,7 @@
                             ></div>
                             <div>
                                 <div>Gender</div>
-                                <div class="form-check form-check-inline" th:each="genderType : ${T(com.medilabosolutions.clientui.beans.GenderEnum).values()}">
+                                <div class="form-check form-check-inline" th:each="genderType : ${T(com.medilabosolutions.clientui.enums.GenderEnum).values()}">
                                     <input type="radio"  id="gender" th:field="*{gender}" th:value="${genderType}">
                                     <label for="gender" class="form-label" th:text="${genderType}"></label>
                                 </div>
