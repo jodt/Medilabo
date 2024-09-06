@@ -11,13 +11,26 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 
 import java.io.IOException;
 
+/**
+ * The CustomAuthenticationSuccessHandler is used to perform actions after successful authentication.
+ * In this case, a jwt token is generated and placed in the authentication object.
+ */
 public class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
     @Autowired
     private JwtService jwtService;
 
+    /**
+     * Places a jwt generated token to the authentication details   after successful authentication, and
+     * redirect the user to the home page.
+     *
+     * @param request        the HttpServletRequest request
+     * @param response       the HttpServletResponse response
+     * @param authentication containing the user's authentication information
+     * @throws IOException
+     */
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
 
         String token = this.jwtService.generateJwtToken(authentication);
 

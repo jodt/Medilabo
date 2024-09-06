@@ -24,12 +24,22 @@ public class SecurityConfig {
     @Value("${jwt.secret}")
     private String jwtKey;
 
+    /**
+     * This method is used to configure the security filter chain which is responsible
+     * for all security (protection of application URLs, redirection to the login form, etc.)
+     * Each request is filtered to check if the user can access the requested URL.
+     * URLs can be accessible to everyone, or just if the user has sufficient authorizations or if he is authenticated.
+     *
+     * @param http
+     * @return a securityFilterChain
+     * @throws Exception
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
                 .authorizeHttpRequests(authorize ->
-                        authorize.requestMatchers("/assets/**","/webjars/**", "/actuator/**").permitAll()
+                        authorize.requestMatchers("/assets/**", "/webjars/**", "/actuator/**").permitAll()
                                 .requestMatchers("/login").permitAll()
                                 .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults())
@@ -39,6 +49,11 @@ public class SecurityConfig {
         return http.build();
     }
 
+    /**
+     * Configures two users in memory with their name, password and roles
+     *
+     * @return InMemoryUserDetailsManager
+     */
     @Bean
     public InMemoryUserDetailsManager userDetailsManager() {
 
@@ -56,16 +71,31 @@ public class SecurityConfig {
 
     }
 
+    /**
+     * Returns a jwtEncoder used to encode a jwt token.
+     *
+     * @return a jwtEncoder
+     */
     @Bean
     public JwtEncoder jwtEncoder() {
         return new NimbusJwtEncoder((new ImmutableSecret<>(this.jwtKey.getBytes())));
     }
 
+    /**
+     * Returns a BCryptPasswordEncoder used ton encode the user password with Bcrypt.
+     *
+     * @return a BCryptPasswordEncoder
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * Ths method is used to perform actions after successful authentication.
+     *
+     * @return new instance of CustomSuccessHandler
+     */
     @Bean
     public AuthenticationSuccessHandler authenticationSuccessHandler() {
         return new CustomAuthenticationSuccessHandler();

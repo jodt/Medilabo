@@ -14,6 +14,9 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Service responsible for handling the generation of JWT tokens.
+ */
 @Service
 public class JwtServiceImpl implements JwtService {
 
