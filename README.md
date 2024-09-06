@@ -24,8 +24,8 @@ The project uses spring security. When the user successfully authenticates, a jw
 * Clone the project
 * Open it in your IDE
 * Run each microservices or use docker-compose up command if you are using docker
-* Type http://localhost:8080 into your browser
 * Databases are created and test data is inserted
+* Type http://localhost:8080 in your browser
 * Have fun
 
 ## Preview
