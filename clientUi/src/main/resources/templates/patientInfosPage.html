@@ -24,8 +24,8 @@
                     <div class="card-header bg-primary-subtle" th:text="'Patient number : ' + ${patient.id}"></div>
                     <div class="card-body">
                         <ul>
-                            <li th:text="'LastName: ' + ${patient.lastName}"></li>
-                            <li th:text="'FirstName: ' + ${patient.firstName}"></li>
+                            <li th:text="'Last Name: ' + ${patient.lastName}"></li>
+                            <li th:text="'First Name: ' + ${patient.firstName}"></li>
                             <li th:text="'Date of Birth: ' + ${#temporals.format(patient.dateOfBirth, 'dd-MM-yyyy')}"></li>
                             <li th:text="'Gender: ' + ${patient.getGender()}"></li>
                             <li th:if="${patient.address}" th:text="'Address : ' +(${patient.address.getNumber()} != null ? ${patient.address.getNumber()} : '')  + ' ' +  (${patient.address.getStreet()} != null ? ${patient.address.getStreet()} : '')"></li>
