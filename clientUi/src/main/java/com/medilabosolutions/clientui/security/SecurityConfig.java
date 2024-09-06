@@ -29,7 +29,7 @@ public class SecurityConfig {
         http
                 .csrf().disable()
                 .authorizeHttpRequests(authorize ->
-                        authorize.requestMatchers("/assets/**","/webjars/**").permitAll()
+                        authorize.requestMatchers("/assets/**","/webjars/**", "/actuator/**").permitAll()
                                 .requestMatchers("/login").permitAll()
                                 .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults())
