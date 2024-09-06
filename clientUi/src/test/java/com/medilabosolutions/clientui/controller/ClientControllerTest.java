@@ -1,7 +1,7 @@
 package com.medilabosolutions.clientui.controller;
 
 import com.medilabosolutions.clientui.beans.AddressBean;
-import com.medilabosolutions.clientui.beans.GenderEnum;
+import com.medilabosolutions.clientui.enums.GenderEnum;
 import com.medilabosolutions.clientui.beans.NoteBean;
 import com.medilabosolutions.clientui.beans.PatientBean;
 import com.medilabosolutions.clientui.exceptions.PatientAlreadyRegisteredException;

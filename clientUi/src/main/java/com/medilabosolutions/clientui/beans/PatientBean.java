@@ -1,5 +1,6 @@
 package com.medilabosolutions.clientui.beans;
 
+import com.medilabosolutions.clientui.enums.GenderEnum;
 import com.medilabosolutions.clientui.validation.ValidDateOfBirth;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
