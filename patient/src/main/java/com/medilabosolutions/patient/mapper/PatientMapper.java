@@ -2,7 +2,7 @@ package com.medilabosolutions.patient.mapper;
 
 import com.medilabosolutions.patient.dto.GenderEnumDto;
 import com.medilabosolutions.patient.dto.PatientDto;
-import com.medilabosolutions.patient.model.GenderEnum;
+import com.medilabosolutions.patient.enums.GenderEnum;
 import com.medilabosolutions.patient.model.Patient;
 import fr.xebia.extras.selma.EnumMapper;
 import fr.xebia.extras.selma.Mapper;

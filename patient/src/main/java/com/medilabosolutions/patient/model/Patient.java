@@ -1,5 +1,6 @@
 package com.medilabosolutions.patient.model;
 
+import com.medilabosolutions.patient.enums.GenderEnum;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;

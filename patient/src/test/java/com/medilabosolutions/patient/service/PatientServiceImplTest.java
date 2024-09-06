@@ -6,7 +6,7 @@ import com.medilabosolutions.patient.dto.PatientDto;
 import com.medilabosolutions.patient.exception.PatientAlreadyRegisteredException;
 import com.medilabosolutions.patient.exception.ResouceNotFoundException;
 import com.medilabosolutions.patient.model.Address;
-import com.medilabosolutions.patient.model.GenderEnum;
+import com.medilabosolutions.patient.enums.GenderEnum;
 import com.medilabosolutions.patient.model.Patient;
 import com.medilabosolutions.patient.repository.PatientRepository;
 import org.junit.jupiter.api.BeforeEach;
