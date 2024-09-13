@@ -21,6 +21,16 @@ public class SecurityConfig {
     @Value("${jwt.secret}")
     private String jwtKey;
 
+
+    /**
+     * This method is used to configure the security web filter chain which is responsible
+     * for all security (protection of application URLs etc...)
+     * Each request is filtered to check if the user can access the requested URL.
+     * URLs can be accessible to everyone, or just if the user has sufficient authorizations or if he is authenticated.
+     *
+     * @param http
+     * @return a SecurityWebFilterChain
+     */
     @Bean
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
         http
