@@ -7,6 +7,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+/**
+ * Class responsible for inserting data into the database when the microservice starts
+ */
 @Component
 public class DataInitialization implements CommandLineRunner {
 
@@ -69,6 +72,12 @@ public class DataInitialization implements CommandLineRunner {
         this.insertNotesIfNotExist(notes);
     }
 
+    /**
+     * Check for each note if it already exists in the database
+     * and insert it if it is not already present.
+     *
+     * @param notes a list of note
+     */
     private void insertNotesIfNotExist(List<Note> notes){
         for (Note note : notes) {
             if (!noteRepository.existsByPatientIdAndContent(note.getPatientId(), note.getContent())) {
