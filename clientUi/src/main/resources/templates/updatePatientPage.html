@@ -77,6 +77,11 @@
                                 <label for="phoneNumber" class="form-label">Phone number</label>
                                 <input type="text" class="form-control" id="phoneNumber" th:field="*{phoneNumber}">
                             </div>
+                            <div
+                                    class="text-danger"
+                                    th:if="${#fields.hasErrors('phoneNumber')}"
+                                    th:errors="*{phoneNumber}"
+                            ></div>
                             <button type="submit" class="btn btn-primary">Submit</button>
                         </form>
                     </div>
