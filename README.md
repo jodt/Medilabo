@@ -23,6 +23,8 @@ The project uses spring security. When the user successfully authenticates, a jw
 ## Using MedilaboSolutions
 * Clone the project
 * Open it in your IDE
+* In Intellij if the modules are not recognized as a maven project, right click on the pom.xml file of each module and click "Add as Maven project". Then in the Maven tab, click on “Reload all maven projects”
+* In the Patient and Note microservices, update the application properties file with your credentials for connecting to your databases.
 * Run each microservices or use docker-compose up command if you are using docker
 * Databases are created and test data is inserted
 * Type http://localhost:8080 in your browser
