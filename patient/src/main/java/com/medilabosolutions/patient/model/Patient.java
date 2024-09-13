@@ -22,9 +22,11 @@ public class Patient {
     private Integer id;
 
     @NotNull
+    @Column(length = 150)
     private String lastName;
 
     @NotNull
+    @Column(length = 100)
     private String firstName;
 
     @NotNull
@@ -38,6 +40,7 @@ public class Patient {
     @JoinColumn(name = "address_id", referencedColumnName = "id")
     private Address address;
 
+    @Column(length = 30)
     private String phoneNumber;
 
 }
