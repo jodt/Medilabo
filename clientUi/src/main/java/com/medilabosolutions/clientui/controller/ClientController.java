@@ -101,7 +101,7 @@ public class ClientController {
                     List<NoteBean> patientNotes = this.noteProxy.findNotesByPatientId(id);
                     model.addAttribute("notes", patientNotes);
                 } catch (FeignException ex) {
-                    log.error("error" + ex);
+                    log.error("error : {}", ex.getMessage());
                     model.addAttribute("noteServiceErrorMessage", "Note " + SERVICE_INACCESSIBLE_MESSAGE);
                 }
 
@@ -109,7 +109,7 @@ public class ClientController {
                     String riskLevel = this.riskReportProxy.getRiskPatient(id);
                     model.addAttribute("risk", riskLevel);
                 } catch (FeignException e) {
-                    log.error(" passe dans le catch : error" + e);
+                    log.error("error : {}", e.getMessage());
                     model.addAttribute("riskServiceErrorMessage", "Risk " + SERVICE_INACCESSIBLE_MESSAGE);
                 }
             }
