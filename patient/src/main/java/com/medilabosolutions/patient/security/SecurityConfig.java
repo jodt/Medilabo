@@ -46,6 +46,10 @@ public class SecurityConfig {
 
     }
 
+    /**
+     * Configure a Jwtdecoder to verify the token signature
+     * @return JwtDecoder
+     */
     @Bean
     public JwtDecoder jwtDecoder() {
         SecretKeySpec secretKey = new SecretKeySpec(this.jwtKey.getBytes(), 0, this.jwtKey.getBytes().length, "HmacSHA256");

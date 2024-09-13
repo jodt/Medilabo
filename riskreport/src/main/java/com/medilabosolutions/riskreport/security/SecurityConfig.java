@@ -49,12 +49,21 @@ public class SecurityConfig {
 
     }
 
+    /**
+     * Configure a Jwtdecoder to verify the token signature
+     * @return JwtDecoder
+     */
     @Bean
     public JwtDecoder jwtDecoder() {
         SecretKeySpec secretKey = new SecretKeySpec(this.jwtKey.getBytes(), 0, this.jwtKey.getBytes().length, "HmacSHA256");
         return NimbusJwtDecoder.withSecretKey(secretKey).macAlgorithm(MacAlgorithm.HS256).build();
     }
 
+    /**
+     * Configure a JwtAuthenticationConverter converter to retrieve the roles/authorities in the jwt token
+     *
+     * @return JwtAuthenticationConverter
+     */
     @Bean
     public JwtAuthenticationConverter jwtAuthenticationConverter() {
         JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
