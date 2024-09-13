@@ -3,11 +3,12 @@ package com.medilabosolutions.patient.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.medilabosolutions.patient.dto.AddressDto;
 import com.medilabosolutions.patient.dto.GenderEnumDto;
+import com.medilabosolutions.patient.dto.PatientAgeGenderDto;
 import com.medilabosolutions.patient.dto.PatientDto;
+import com.medilabosolutions.patient.enums.GenderEnum;
 import com.medilabosolutions.patient.exception.PatientAlreadyRegisteredException;
 import com.medilabosolutions.patient.exception.ResouceNotFoundException;
 import com.medilabosolutions.patient.model.Address;
-import com.medilabosolutions.patient.enums.GenderEnum;
 import com.medilabosolutions.patient.model.Patient;
 import com.medilabosolutions.patient.service.PatientService;
 import org.junit.jupiter.api.BeforeEach;
@@ -232,6 +233,45 @@ class PatientControllerTest {
                 .andDo(print());
 
         verify(this.patientService).updatePatient(patientDto);
+
+    }
+
+    @Test
+    @DisplayName("Should get patientAgeGender")
+    void shouldGetPatientAgeGender() throws Exception {
+
+        PatientAgeGenderDto patientAgeGenderDto = PatientAgeGenderDto.builder()
+                .Age(20)
+                .gender(GenderEnumDto.M)
+                .build();
+
+        when(this.patientService.getPatientWithAgeAndGender(1)).thenReturn(patientAgeGenderDto);
+
+        mockMvc.perform(get(URL_PREFIX + "/patientAgeGender/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .with(SecurityMockMvcRequestPostProcessors.jwt().authorities(new SimpleGrantedAuthority("ROLE_USER"))))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.age").value(20))
+                .andExpect(jsonPath("$.gender").value("M"))
+                .andDo(print());
+
+        verify(this.patientService).getPatientWithAgeAndGender(1);
+
+    }
+
+
+    @Test
+    @DisplayName("Should get patientAgeGender -> ResouceNotFoundException")
+    void shouldNotGetPatientAgeGender() throws Exception {
+
+        when(this.patientService.getPatientWithAgeAndGender(1)).thenThrow(ResouceNotFoundException.class);
+
+        mockMvc.perform(get(URL_PREFIX + "/patientAgeGender/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .with(SecurityMockMvcRequestPostProcessors.jwt().authorities(new SimpleGrantedAuthority("ROLE_USER"))))
+                .andExpect(status().isNotFound());
+
+        verify(this.patientService).getPatientWithAgeAndGender(1);
 
     }
 }

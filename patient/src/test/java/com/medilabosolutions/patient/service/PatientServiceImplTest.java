@@ -2,13 +2,15 @@ package com.medilabosolutions.patient.service;
 
 import com.medilabosolutions.patient.dto.AddressDto;
 import com.medilabosolutions.patient.dto.GenderEnumDto;
+import com.medilabosolutions.patient.dto.PatientAgeGenderDto;
 import com.medilabosolutions.patient.dto.PatientDto;
+import com.medilabosolutions.patient.enums.GenderEnum;
 import com.medilabosolutions.patient.exception.PatientAlreadyRegisteredException;
 import com.medilabosolutions.patient.exception.ResouceNotFoundException;
 import com.medilabosolutions.patient.model.Address;
-import com.medilabosolutions.patient.enums.GenderEnum;
 import com.medilabosolutions.patient.model.Patient;
 import com.medilabosolutions.patient.repository.PatientRepository;
+import com.medilabosolutions.patient.utils.AgeCalculator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -171,7 +173,7 @@ class PatientServiceImplTest {
                 .build();
 
         when(this.patientRepository.findById(1)).thenReturn(Optional.ofNullable(patient));
-        when(this.addressService.getAddressByNumberAndStreet(address.getNumber(),address.getStreet())).thenReturn(Optional.ofNullable(address));
+        when(this.addressService.getAddressByNumberAndStreet(address.getNumber(), address.getStreet())).thenReturn(Optional.ofNullable(address));
         when(this.patientRepository.save(patientUpdated)).thenReturn(patientUpdated);
 
         Patient patientResult = this.patientService.updatePatient(patientDto);
@@ -224,12 +226,38 @@ class PatientServiceImplTest {
     }
 
     @Test
-    @DisplayName("should not get patient By Id -> patient not found")
+    @DisplayName("Should not get patient By Id -> patient not found")
     void shouldNotdGetPatientById() throws ResouceNotFoundException {
 
         when(this.patientRepository.findById(1)).thenReturn(Optional.empty());
 
         assertThrows(ResouceNotFoundException.class, () -> this.patientService.getPatientById(1));
+
+        verify(this.patientRepository).findById(1);
+    }
+
+    @Test
+    @DisplayName("Should get patientAgeGender by id")
+    void shouldGetPatientAgeGenderById() throws ResouceNotFoundException {
+
+        when(this.patientRepository.findById(1)).thenReturn(Optional.ofNullable(patient));
+
+        PatientAgeGenderDto patientAgeGenderDto = this.patientService.getPatientWithAgeAndGender(1);
+
+        assertNotNull(patientAgeGenderDto);
+        assertEquals(AgeCalculator.calculatePatientAge(patient.getDateOfBirth()), patientAgeGenderDto.getAge());
+        assertEquals(GenderEnumDto.M, patientAgeGenderDto.getGender());
+
+        verify(this.patientRepository).findById(1);
+    }
+
+    @Test
+    @DisplayName("Should not get patientAgeGender by id -> ResouceNotFoundException")
+    void shouldNotdGetPatientAgeGenderById() {
+
+        when(this.patientRepository.findById(1)).thenReturn(Optional.empty());
+
+        assertThrows(ResouceNotFoundException.class, () -> this.patientService.getPatientWithAgeAndGender(1));
 
         verify(this.patientRepository).findById(1);
     }
