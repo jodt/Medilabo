@@ -27,11 +27,12 @@ public class ClientController {
 
     private final PatientProxy patientProxy;
 
-    private  final NoteProxy noteProxy;
+    private final NoteProxy noteProxy;
 
     private final RiskReportProxy riskReportProxy;
 
     private static final String ERROR_MESSAGE = "We encountered a problem";
+
     private static final String SERVICE_INACCESSIBLE_MESSAGE = "service is temporarily inaccessible";
 
     private static final String SUCCESS_MESSAGE = "Action completed successfully";
@@ -42,12 +43,27 @@ public class ClientController {
         this.riskReportProxy = riskReportProxy;
     }
 
+    /**
+     * Displays the login page.
+     *
+     * @return login page
+     */
     @GetMapping("/login")
-    public String showLoginForm(){
+    public String showLoginForm() {
         log.info("GET /login called -> display login page");
         return ("login");
     }
 
+    /**
+     * Displays the home page with the list of all patients by default, otherwise displays
+     * patients matching the criteria entered in the search bar.
+     *
+     * @param model
+     * @param firstName
+     * @param lastName
+     * @param dateOfBirth
+     * @return the home page
+     */
     @GetMapping("/")
     public String allPatientByCriteria(Model model,
                                        @RequestParam(defaultValue = "") String firstName,
@@ -60,6 +76,12 @@ public class ClientController {
         return ("homePage");
     }
 
+    /**
+     * Displays the page with the form to add a new patient.
+     *
+     * @param model
+     * @return the add patient form
+     */
     @GetMapping("/patient/add")
     public String showAddPatientForm(Model model) {
         log.info("GET /patient/add called");
@@ -68,6 +90,16 @@ public class ClientController {
         return ("addPatientPage");
     }
 
+    /**
+     * Manages the submission of the add patient form.
+     * Show the add Patient form with a success message if the user was added to the database successfully.
+     * If fields are in error, an error message is displayed under the fields concerned.
+     * If during validation, the patient already exists in the database, an error message is displayed.
+     *
+     * @param newPatient
+     * @param bindingResult
+     * @return the add patient form with success or error message
+     */
     @PostMapping("/patient/add")
     public String addNewPatient(@Valid @ModelAttribute("newPatient") PatientBean newPatient, BindingResult bindingResult) {
         log.info("POST /patient/add called -> start process to add patient");
@@ -87,6 +119,17 @@ public class ClientController {
         return ("redirect:add?success");
     }
 
+    /**
+     * Displays the page containing patient information. If the user also has the ADMIN role
+     * displays notes and level of risk of developing diabetes.
+     * If the patient is not found, the user is redirected to the home page with an error message.
+     *
+     * @param model
+     * @param id
+     * @param redirectAttributes
+     * @param authentication
+     * @return the page with the patient's information
+     */
     @GetMapping("/patient/infos/{id}")
     public String getPatientInfos(Model model, @PathVariable Integer id, RedirectAttributes redirectAttributes, Authentication authentication) {
         log.info("GET /patient/infos/{} -> start process to view information about patient number {}", id, id);
@@ -95,7 +138,7 @@ public class ClientController {
             model.addAttribute("patient", patient);
             model.addAttribute("newNote", new NoteBean());
 
-            if(hasAdminRole(authentication)) {
+            if (hasAdminRole(authentication)) {
 
                 try {
                     List<NoteBean> patientNotes = this.noteProxy.findNotesByPatientId(id);
@@ -114,7 +157,6 @@ public class ClientController {
                 }
             }
 
-
             log.info("Patient information page displayed");
             return ("patientInfosPage");
 
@@ -126,6 +168,15 @@ public class ClientController {
         }
     }
 
+    /**
+     * Displays the patient update page with the patient information to edit.
+     * If the patient is not found, the user is redirected to the home page with an error message.
+     *
+     * @param model
+     * @param id
+     * @param redirectAttributes
+     * @return the patient update page of the home page if patient is not found
+     */
     @GetMapping("/patient/update/{id}")
     public String showUpdatePatientForm(Model model, @PathVariable Integer id, RedirectAttributes redirectAttributes) {
         log.info("GET /patient/update/{} called", id);
@@ -142,6 +193,17 @@ public class ClientController {
         }
     }
 
+    /**
+     * Manages patient update form submission.
+     * If fields are in error, an error message is displayed under the fields concerned.
+     * Redirect the user to the home page with a success message if the user was updated successfully.
+     * Redirect the user to the home page with an error message if the user was not found.
+     *
+     * @param patientUpdated
+     * @param bindingResult
+     * @param redirectAttributes
+     * @return redirect to the home page
+     */
     @PostMapping("/patient/update")
     public String updatePatient(@Valid @ModelAttribute("patient") PatientBean patientUpdated, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         log.info("POST /patient/update called -> start process to update patient number {}", patientUpdated.getId());
@@ -164,7 +226,13 @@ public class ClientController {
         }
     }
 
+    /**
+     * Check if the user has the ADMIN role
+     *
+     * @param authentication
+     * @return true if the user has an ADMIN role otherwise false
+     */
     private boolean hasAdminRole(Authentication authentication) {
-        return  authentication.getAuthorities().stream().anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"));
+        return authentication.getAuthorities().stream().anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"));
     }
 }
