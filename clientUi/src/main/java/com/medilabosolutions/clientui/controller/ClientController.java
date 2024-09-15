@@ -70,7 +70,7 @@ public class ClientController {
                                        @RequestParam(defaultValue = "") String lastName,
                                        @RequestParam(defaultValue = "") LocalDate dateOfBirth) {
         log.info("GET / called");
-        List<PatientBean> patients = this.patientProxy.getBySearchCriteria(lastName, firstName, dateOfBirth);
+        List<PatientBean> patients = this.patientProxy.getPatientsBySearchCriteria(lastName, firstName, dateOfBirth);
         model.addAttribute("patients", patients);
         log.info("Home page displayed");
         return ("homePage");

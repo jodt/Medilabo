@@ -17,7 +17,7 @@ public interface PatientProxy {
     public List<PatientBean> getAllPatients ();
 
     @GetMapping("v1/api/patients/findBySearchCriteria")
-    public List<PatientBean> getBySearchCriteria(@RequestParam String lastName, @RequestParam String firstName, @RequestParam LocalDate dateOfBirth);
+    public List<PatientBean> getPatientsBySearchCriteria(@RequestParam String lastName, @RequestParam String firstName, @RequestParam LocalDate dateOfBirth);
 
     @PostMapping("v1/api/patients/add")
     public ResponseEntity<PatientBean> addPatient (@RequestBody PatientBean patientBean) throws PatientAlreadyRegisteredException;

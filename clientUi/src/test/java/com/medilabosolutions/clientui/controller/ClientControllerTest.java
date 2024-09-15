@@ -92,7 +92,7 @@ class ClientControllerTest {
     @DisplayName("should display the home page with the list of patients")
     void shouldGetAllPatientByCriteria() throws Exception {
         List<PatientBean> patientBeanList = new ArrayList<>(Arrays.asList(patient));
-        when(this.patientProxy.getBySearchCriteria(any(), any(), any())).thenReturn(patientBeanList);
+        when(this.patientProxy.getPatientsBySearchCriteria(any(), any(), any())).thenReturn(patientBeanList);
 
         this.mockMvc.perform(get("/"))
                 .andExpect(status().isOk())
@@ -101,7 +101,7 @@ class ClientControllerTest {
                 .andExpect(model().attribute("patients", hasItem(patient)))
                 .andExpect(view().name("homePage"));
 
-        verify(this.patientProxy).getBySearchCriteria(any(),any(),any());
+        verify(this.patientProxy).getPatientsBySearchCriteria(any(),any(),any());
     }
 
     @Test
