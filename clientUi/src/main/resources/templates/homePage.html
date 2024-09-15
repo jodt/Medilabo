@@ -1,0 +1,86 @@
+<!DOCTYPE HTML>
+<html
+        lang="en"
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{layout}"
+>
+    <head>
+        <meta charset="UTF-8">
+        <title>Medilabo</title>
+        <link rel="stylesheet" href="/webjars/bootstrap/5.3.3/css/bootstrap.min.css">
+        <link rel="stylesheet" href="webjars/bootstrap-icons/1.11.3/font/bootstrap-icons.css">
+    </head>
+    <body layout:fragment="content">
+        <div class="container p-3">
+            <div class="alert alert-danger" th:if="${errorMessage}" th:text="${errorMessage}">
+            </div>
+            <div class="alert alert-success" th:if="${successMessage}" th:text="${successMessage}">
+            </div>
+            <div>
+                <div class="pb-2">
+                    <div class="card">
+                        <div class="card-header bg-primary-subtle">Search Patient</div>
+                        <div class="card-body">
+                            <form class="d-flex flex-row align-items-end justify-content-around" th:action="@{/}">
+                                <div>
+                                    <label for="lastName" class="form-label">Last Name</label>
+                                    <input type="text" class="form-control" id="lastName" th:name="lastName">
+                                </div>
+                                <div>
+                                    <label for="firstName" class="form-label">First Name</label>
+                                    <input type="text" class="form-control" id="firstName" th:name="firstName">
+                                </div>
+                                <div>
+                                    <label for="dateOfBirth" class="form-label">Date Of Birth</label>
+                                    <input type="date" class="form-control" id="dateOfBirth" th:name="dateOfBirth">
+                                </div>
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header bg-primary-subtle">Patient List</div>
+                    <div class="card-body">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Patient Number</th>
+                                    <th scope="col">Last Name</th>
+                                    <th scope="col">First Name</th>
+                                    <th scope="col">Date Of Birth</th>
+                                    <th scope="col">Gender</th>
+                                    <th scope="col">Address</th>
+                                    <th scope="col">Phone Number</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="patient : ${patients}">
+                                    <td th:text="${patient.id}"></td>
+                                    <td th:text="${#strings.capitalize(patient.lastName)}"></td>
+                                    <td th:text="${#strings.capitalize(patient.firstName)}"></td>
+                                    <td th:text="${#temporals.format(patient.dateOfBirth, 'dd-MM-yyyy')}"></td>
+                                    <td th:text="${patient.gender}"></td>
+                                    <td th:if="${patient.address}" th:text="${patient.address.getNumber()}  + ' ' +  ${#strings.toLowerCase(patient.address.getStreet())}"></td>
+                                    <td th:unless="${patient.address}"></td>
+                                    <td th:text="${patient.phoneNumber}"></td>
+                                    <td>
+                                        <a class="btn btn-primary" th:href="@{/patient/update/{id}(id=${patient.id})}">
+                                            <i class="bi bi-pencil-fill"></i>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a class="btn btn-success" th:href="@{/patient/infos/{id}(id=${patient.id})}">
+                                            <i class="bi bi-eye-fill"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <link rel="stylesheet" href="/webjars/bootstrap/5.3.3/css/bootstrap.min.css">
+        <title>Medilabo</title>
+    </head>
+    <body
+            style="height: 100vh"
+            class="d-flex flex-column align-items-center justify-content-center"
+    >
+        <div class="alert alert-danger" role="alert" th:if="${param.error}">
+            Invalid email or password.
+        </div>
+        <div class="alert alert-warning" role="alert" th:if="${param.logout}">
+            you have been logged out.
+        </div>
+        <form
+                style="height: 400px; width: 300px"
+                class="d-flex flex-column justify-content-between align-items-center border border-dark rounded-4 p-5"
+                th:action="@{/login}"
+                method="post"
+        >
+            <img th:src="@{/assets/logo.png}" class="w-100" />
+            <div class="form-group">
+                <input
+                        type="text"
+                        class="form-control"
+                        id="username"
+                        aria-describedby="emailHelp"
+                        placeholder="Username"
+                        name="username"
+                />
+            </div>
+            <div class="form-group">
+                <input
+                        type="password"
+                        class="form-control"
+                        id="password"
+                        placeholder="Password"
+                        name="password"
+                />
+            </div>
+            <button type="submit" class="btn btn-primary">LOGIN</button>
+        </form>
+    </body>
+</html>
