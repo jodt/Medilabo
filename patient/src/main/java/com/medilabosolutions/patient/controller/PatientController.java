@@ -31,7 +31,7 @@ public class PatientController {
     }
 
     @GetMapping("/findBySearchCriteria")
-    public List<PatientDto> getBySerachCriteria(@RequestParam(required = false) String lastName, @RequestParam(required = false) String firstName, @RequestParam(required = false) LocalDate dateOfBirth) {
+    public List<PatientDto> getPatientsBySearchCriteria(@RequestParam(required = false) String lastName, @RequestParam(required = false) String firstName, @RequestParam(required = false) LocalDate dateOfBirth) {
         log.info("GET /findBySearchCriteria called -> start process to search patient with lastName : {}, firstName : {}, date of birth : {}", lastName.isEmpty() ? null : lastName , firstName.isEmpty() ? null : firstName, dateOfBirth);
         List<PatientDto> patientFound = this.patientService.findPatients(lastName, firstName, dateOfBirth);
         log.info("{} patient(s) found with these criteria", patientFound.size());
