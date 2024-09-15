@@ -58,5 +58,7 @@ The project uses spring security. When the user successfully authenticates, a jw
 
 
 ## Area of Improvement
-* Externalize configuration (Spring cloud config)
+* Externalize configuration (Spring Cloud Config)
 * Add a registry and discovery microservice (Eureka)
+* Develop feature for deleting a patient
+* Develop feature for updating and deleting a note
