@@ -24,11 +24,11 @@
                     <div class="card-header bg-primary-subtle" th:text="'Patient number : ' + ${patient.id}"></div>
                     <div class="card-body">
                         <ul>
-                            <li th:text="'Last Name: ' + ${patient.lastName}"></li>
-                            <li th:text="'First Name: ' + ${patient.firstName}"></li>
+                            <li th:text="'Last Name: ' + ${#strings.capitalize(patient.lastName)}"></li>
+                            <li th:text="'First Name: ' + ${#strings.capitalize(patient.firstName)}"></li>
                             <li th:text="'Date of Birth: ' + ${#temporals.format(patient.dateOfBirth, 'dd-MM-yyyy')}"></li>
                             <li th:text="'Gender: ' + ${patient.getGender()}"></li>
-                            <li th:if="${patient.address}" th:text="'Address : ' +(${patient.address.getNumber()} != null ? ${patient.address.getNumber()} : '')  + ' ' +  (${patient.address.getStreet()} != null ? ${patient.address.getStreet()} : '')"></li>
+                            <li th:if="${patient.address}" th:text="'Address : ' + ${patient.address.getNumber()} + ' ' + ${#strings.toLowerCase(patient.address.getStreet())}"></li>
                             <li th:unless="${patient.address}" th:text="'Address : Not specified'"></li>
                             <li th:text="'Phone number: ' + (${patient.phoneNumber} != '' ? ${patient.phoneNumber} : 'Not specified')"></li>
                         </ul>

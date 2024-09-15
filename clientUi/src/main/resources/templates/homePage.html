@@ -58,11 +58,11 @@
                             <tbody>
                                 <tr th:each="patient : ${patients}">
                                     <td th:text="${patient.id}"></td>
-                                    <td th:text="${patient.lastName}"></td>
-                                    <td th:text="${patient.firstName}"></td>
+                                    <td th:text="${#strings.capitalize(patient.lastName)}"></td>
+                                    <td th:text="${#strings.capitalize(patient.firstName)}"></td>
                                     <td th:text="${#temporals.format(patient.dateOfBirth, 'dd-MM-yyyy')}"></td>
                                     <td th:text="${patient.gender}"></td>
-                                    <td th:if="${patient.address}" th:text="(${patient.address.getNumber()} != null ? ${patient.address.getNumber()} : '')  + ' ' +  ${patient.address.getStreet()}"></td>
+                                    <td th:if="${patient.address}" th:text="${patient.address.getNumber()}  + ' ' +  ${#strings.toLowerCase(patient.address.getStreet())}"></td>
                                     <td th:unless="${patient.address}"></td>
                                     <td th:text="${patient.phoneNumber}"></td>
                                     <td>
